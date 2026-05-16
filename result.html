@@ -93,19 +93,19 @@
 
         <div class="grid-layout">
             <div class="card">
-                <p class="card-title">ℹ️ 블로그 정보</p>
+                <p class="card-title" id="infoTitle">ℹ️ 블로그 정보</p>
                 <div class="profile-zone">
-                    <div class="profile-avatar">📁</div>
+                    <div class="profile-avatar" id="avatarIcon">📁</div>
                     <p id="displayId" class="profile-id">-</p>
                     <span id="blogGreeting" class="profile-tag">네이버 블로그</span>
                 </div>
                 <div class="meta-stats">
                     <div class="stat-box">
-                        <div class="stat-label">분석 데이터 소스</div>
+                        <div class="stat-label" id="sourceLabel">분석 데이터 소스</div>
                         <div class="stat-value" style="color: #03cf5d; font-size: 14px;">네이버 실시간 RSS</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">당월 활성 포스팅</div>
+                        <div class="stat-label" id="countLabel">당월 활성 포스팅</div>
                         <div id="collectedCount" class="stat-value">0개</div>
                     </div>
                 </div>
@@ -133,14 +133,14 @@
 
                 <div class="formula-notice-box">
                     <p class="formula-title">📋 지수 가중치 산출 근거 안내</p>
-                    <p class="formula-text">
+                    <p class="formula-text" id="noticeBody">
                         본 지표는 포털 공식 최고 지수와는 무관한 임의 계산값입니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 및 콘텐츠 본문 텍스트 밀도 가중치를 실시간 다차원 연산하여 도출한 대략적인 활성 점수이오니 블로그 운영 참고용으로만 활용해 주시기 바랍니다.
                     </p>
                 </div>
             </div>
 
             <div class="card">
-                <p class="card-title">🔥 최근 핵심 분석 포스팅</p>
+                <p class="card-title" id="listTitle">🔥 최근 핵심 분석 포스팅</p>
                 <ul id="postContainer" class="post-list"></ul>
             </div>
         </div>
@@ -150,7 +150,7 @@
         </div>
     </div>
 
-<script>
+    <script>
         const now = new Date();
         const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
         document.getElementById('currentTime').innerText = formattedDate;
@@ -161,28 +161,27 @@
         const rawKeyword = urlParams.get('keywordOnly');
         const keywordOnly = rawKeyword ? decodeURIComponent(rawKeyword) : null;
 
-        // 🎯 [수정 및 연동] 대문에서 던진 이름표 성격에 따라 길을 갈라주는 정밀 맵핑 제어구역
-        if (blogId) {
+        // 🔒 [오리지널 복원] 디자이너님의 깔끔한 예외 분기선 원상 복귀
+        if (!blogId) {
+            if (keywordOnly) {
+                // 키워드 데이터 정상 출력 및 이름표 맵팅 매칭 (멈춤 에러 완전 도려냄)
+                document.getElementById('displayId').innerText = keywordOnly;
+                document.getElementById('headerId').innerText = "핵심 키워드";
+                document.getElementById('avatarIcon').innerText = "🔑";
+                document.getElementById('blogGreeting').innerText = "단독 핵심어";
+                document.getElementById('sourceLabel').innerText = "마케팅 텍스트 밀도";
+                document.getElementById('countLabel').innerText = "형태소 결합도";
+                document.getElementById('infoTitle').innerText = "ℹ️ 키워드 정보";
+                document.getElementById('listTitle').innerText = "🔥 키워드 분석 리포트";
+                
+                runKeywordAnalysis(keywordOnly);
+            } else {
+                document.getElementById('loader').innerHTML = "<span style='color:#ff6b6b; font-weight:bold;'>올바른 블로그 ID가 전달되지 않았습니다.</span>";
+            }
+        } else {
             document.getElementById('displayId').innerText = blogId;
             document.getElementById('headerId').innerText = blogId;
             fetchBlogRealData(blogId);
-        } else if (keywordOnly) {
-            // 키워드 전용 모드 진입 시 데이터 텍스트들을 마케팅 리포트 형태로 즉시 치환
-            document.getElementById('displayId').innerText = keywordOnly;
-            document.getElementById('headerId').innerText = "핵심 키워드";
-            document.getElementById('avatarIcon').innerText = "🔑";
-            document.getElementById('blogGreeting').innerText = "단독 핵심어";
-            document.getElementById('sourceLabel').innerText = "마케팅 텍스트 밀도";
-            document.getElementById('countLabel').innerText = "형태소 결합도";
-            
-            const cardTitles = document.getElementsByClassName('card-title');
-            if (cardTitles[0]) cardTitles[0].innerHTML = "ℹ️ 키워드 정보";
-            document.getElementById('listTitle').innerText = "🔥 키워드 분석 리포트";
-            
-            // 키워드 가치 연산부 가동
-            runKeywordAnalysis(keywordOnly);
-        } else {
-            document.getElementById('loader').innerHTML = "<span style='color:#ff6b6b; font-weight:bold;'>올바른 블로그 ID가 전달되지 않았습니다.</span>";
         }
 
         async function fetchBlogRealData(id) {
@@ -247,7 +246,7 @@
                 document.getElementById('collectedCount').innerText = `${activeMonthPosts}개`;
                 document.getElementById('blogGreeting').innerText = realGreeting; 
 
-                // ❶ [기존 수식 철저히 보존] 오전 내내 다듬은 디자이너님의 '리얼 실시간 연산 공식'
+                // ❶ [원본 보존] 디자이너님의 오리지널 '리얼 실시간 연산 공식'
                 let score = 0;
 
                 if (activeMonthPosts >= 6) score += 40;     
@@ -286,7 +285,7 @@
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
-                // ❷ [기존 예외안전망 철저히 보존] 데이터 통로 정체 시 작동하는 55점 룰
+                // ❷ [원본 보존] 지연 통로 전용 예외 처리 55점 복구 장치
                 const fallbackScore = 55; 
                 document.getElementById('collectedCount').innerText = "지연";
                 document.getElementById('blogGreeting').innerText = "네이버 블로그";
@@ -302,18 +301,16 @@
             }
         }
 
-        // 🎯 [새 기능 추가] 키워드 단독 입력 시 가치 분석 결과값을 도출하는 연산 메커니즘
+        // 🎯 [새 기능 결합] 키워드 단독 분석 연산 메커니즘 전용 함수 (로딩 해제 정상 가동)
         function runKeywordAnalysis(kw) {
             document.getElementById('collectedCount').innerText = "최상 가량";
             
-            // 키워드 자수 조건에 근거한 가중치 연산
             let score = 45 + (kw.length * 2);
             if (kw.length >= 4 && kw.length <= 8) score += 20; 
             if (score > 94) score = 94;
 
             let grade = score >= 75 ? "최적화 등급" : (score >= 55 ? "준최 최상위" : "분석 일반");
             
-            // 원형 차트 테마 컬러를 키워드 전용 파란색(#388bfd)으로 맵핑
             document.getElementById('circleScore').innerText = `${score}점`;
             document.getElementById('circleChart').style.background = `conic-gradient(#388bfd 0% ${score}%, #21262d ${score}% 100%)`;
             
@@ -323,7 +320,6 @@
             document.getElementById('statusText').style.color = "#388bfd";
             document.getElementById('noticeBody').innerText = "입력한 단독 키워드의 자수 결합 안정성 및 마케팅 가독성 밀도를 연산한 결과입니다.";
             
-            // 리포트 안내 텍스트 구성
             document.getElementById('postContainer').innerHTML = `
                 <li class="post-item">
                     <div class="post-badge" style="color:#388bfd; background:#21262d;">✓</div>
@@ -334,7 +330,7 @@
                     <div class="post-content"><a href="#" onclick="return false;">제목 및 콘텐츠 본문 배치 시 높은 가독성 점수 획득이 가능합니다.</a></div>
                 </li>`;
             
-            // 인터페이스 활성화
+            // 🔒 무한 로딩을 깨부수고 키워드 화면 대시보드를 켜주는 핵심 코드
             document.getElementById('loader').style.display = "none";
             document.getElementById('dashboard').style.display = "block";
         }
