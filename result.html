@@ -100,3 +100,153 @@
                     <span id="blogGreeting" class="profile-tag">네이버 블로그</span>
                 </div>
                 <div class="meta-stats">
+                    <div class="stat-box">
+                        <div class="stat-label" id="sourceLabel">분석 데이터 소스</div>
+                        <div id="realtimeDataSource" class="stat-value" style="color: #03cf5d; font-size: 14px;">네이버 실시간 RSS</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label" id="countLabel">당월 활성 포스팅</div>
+                        <div id="collectedCount" class="stat-value">0개</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="card-title">📈 지수 및 노출 분석</p>
+                <div class="jisu-display">
+                    <p class="gauge-subtext">종합 분석 지수 판정</p>
+                    <p id="blogGrade" class="main-grade-text">분석 일반</p>
+                     
+                    <div class="circle-chart-wrapper">
+                        <div id="circleChart" class="circle-chart">
+                            <div class="circle-chart-inner">
+                                <span id="circleScore" class="circle-score">0점</span>
+                                <span class="circle-label">노출 가중치</span>
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="analysis-status-badge">
+                        노출 가중 상태: <span id="statusText" style="color: #03cf5d; font-weight:700;">정상</span>
+                    </div>
+                </div>
+
+                <div class="formula-notice-box">
+                    <p class="formula-title">📋 지수 가중치 산출 근거 안내</p>
+                    <p class="formula-text" id="noticeBody">
+                        본 지표는 포털 공식 최고 지수와는 무관한 임의 계산값입니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 및 콘텐츠 본문 텍스트 밀도 가중치를 실시간 다차원 연산하여 도출한 대략적인 활성 점수이오니 블로그 운영 참고용으로만 활용해 주시기 바랍니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="card-title" id="listTitle">🔥 채널 성향 결과 리포트</p>
+                <ul id="postContainer" class="post-list"></ul>
+            </div>
+        </div>
+
+        <div class="actions-zone">
+            <a href="index.html" id="backBtn" class="back-btn">← 다른 아이디 조회하기</a>
+        </div>
+    </div>
+
+    <script>
+        const now = new Date();
+        const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('currentTime').innerText = formattedDate;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawBlogId = urlParams.get('blogId');
+        // 🌟 잘되던 원본 변수 및 추적 체계 100% 롤백 완료
+        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : "design_studio";
+
+        document.getElementById('displayId').innerText = blogId;
+        document.getElementById('headerId').innerText = blogId;
+        fetchBlogRealData(blogId);
+
+        async function fetchBlogRealData(id) {
+            // 🌟 주말 내내 실시간 연동이 제일 잘되던 원래 프록시 주소 체계로 원상 복구
+            const proxyUrl = "https://corsproxy.io/?";
+            const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000); 
+
+            try {
+                const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
+                clearTimeout(timeoutId); 
+                 
+                if (!response.ok) throw new Error("네이버 응답 지연");
+                 
+                // JSON 변환 찌꺼기 없는 원본 순수 XML 글자 수신 방식 롤백
+                const textData = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(textData, "text/xml");
+                 
+                const channelDoc = xmlDoc.getElementsByTagName("channel")[0];
+                let realGreeting = "네이버 블로그";
+                if (channelDoc) {
+                    const titleNode = channelDoc.getElementsByTagName("title")[0];
+                    if (titleNode && titleNode.textContent.trim().length > 0) {
+                        realGreeting = titleNode.textContent.replace(" : 네이버 블로그", "").trim();
+                        if (realGreeting.length > 22) realGreeting = realGreeting.substring(0, 20) + "...";
+                    }
+                }
+
+                const items = xmlDoc.getElementsByTagName("item");
+                const totalPosts = items.length;
+
+                if (totalPosts === 0) throw new Error("데이터 공백");
+
+                let postHtml = "";
+                let totalTitleLength = 0;
+                let activeMonthPosts = 0; 
+                let dates = [];
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                for (let i = 0; i < Math.min(totalPosts, 5); i++) {
+                    const title = items[i].getElementsByTagName("title")[0].textContent;
+                    const link = items[i].getElementsByTagName("link")[0].textContent;
+                    const pubDateStr = items[i].getElementsByTagName("pubDate")[0].textContent;
+                    const pDate = new Date(pubDateStr);
+                     
+                    totalTitleLength += title.length;
+                    dates.push(pDate);
+
+                    const yy = String(pDate.getFullYear()).slice(-2);
+                    const mm = String(pDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(pDate.getDate()).padStart(2, '0');
+                    const formattedPostDate = `${yy}.${mm}.${dd}`;
+
+                    if (pDate >= thirtyDaysAgo) {
+                        activeMonthPosts++;
+                    }
+
+                    postHtml += `
+                        <li class="post-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px; max-width: 80%; overflow: hidden;">
+                                <div class="post-badge">${i+1}</div>
+                                <div class="post-content" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    <a href="${link}" target="_blank">${title}</a>
+                                </div>
+                            </div>
+                            <span style="color: #8b949e; font-size: 12px; font-family: monospace; flex-shrink: 0;">${formattedPostDate}</span>
+                        </li>`;
+                }
+
+                document.getElementById('collectedCount').innerText = `${activeMonthPosts}개`;
+                document.getElementById('blogGreeting').innerText = realGreeting; 
+
+                let score = 0;
+                if (activeMonthPosts >= 6) score += 40;     
+                else if (activeMonthPosts >= 3) score += 30; 
+                else if (activeMonthPosts >= 1) score += 15; 
+                else score += 5;
+
+                const avgTitleLength = totalTitleLength / Math.min(totalPosts, 5);
+                if (avgTitleLength >= 30) score += 30; 
+                else if (avgTitleLength >= 18) score += 20;
+                else score += 10;
+
+                if (dates.length >= 2 && activeMonthPosts >=
