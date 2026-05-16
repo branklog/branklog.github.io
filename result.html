@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>블로그 지수 분석 브랭크로그 | BrankLog</title>
+    <title>블로그 지수 분석 B랭크로그 | BrankLog</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -27,6 +27,8 @@
         .header-meta-line h2 { font-size: 16px; font-weight: 600; margin: 0; color: #c9d1d9; }
         .header-meta-line h2 span { color: #03cf5d; font-weight: 700; }
         .timestamp { font-size: 13px; color: #8b949e; }
+        
+        /* 3단 그리드 레이아웃 그대로 유지 */
         .grid-layout { display: grid; grid-template-columns: 1fr 1.1fr 1.2fr; gap: 20px; }
         @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
 
@@ -70,6 +72,15 @@
         .loader-wrapper { text-align: center; padding: 60px 0; }
         .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #03cf5d; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 🎯 [추가] 실시간 키워드 순위 매칭 카드 스타일 */
+        .ranking-card { background: linear-gradient(145deg, #1c2128, #161b22); border: 1px solid #388bfd40; margin-top: 20px; }
+        .rank-input-box { display: flex; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 4px; margin-bottom: 15px; }
+        .rank-input-box input { flex-grow: 1; background: transparent; border: none; outline: none; color: #fff; padding: 8px; font-size: 13px; }
+        .rank-btn { background: #388bfd; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .rank-result-area { text-align: center; padding: 10px 0; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
+        .rank-number { font-size: 26px; font-weight: 800; color: #388bfd; margin-bottom: 5px; }
+        .rank-status { font-size: 12px; color: #8b949e; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -92,21 +103,34 @@
         </div>
 
         <div class="grid-layout">
-            <div class="card">
-                <p class="card-title">ℹ️ 블로그 정보</p>
-                <div class="profile-zone">
-                    <div class="profile-avatar">📁</div>
-                    <p id="displayId" class="profile-id">-</p>
-                    <span id="blogGreeting" class="profile-tag">네이버 블로그</span>
-                </div>
-                <div class="meta-stats">
-                    <div class="stat-box">
-                        <div class="stat-label">분석 데이터 소스</div>
-                        <div class="stat-value" style="color: #03cf5d; font-size: 14px;">네이버 실시간 RSS</div>
+            <div style="display: flex; flex-direction: column;">
+                <div class="card">
+                    <p class="card-title">ℹ️ 블로그 정보</p>
+                    <div class="profile-zone">
+                        <div class="profile-avatar">📁</div>
+                        <p id="displayId" class="profile-id">-</p>
+                        <span id="blogGreeting" class="profile-tag">네이버 블로그</span>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">당월 활성 포스팅</div>
-                        <div id="collectedCount" class="stat-value">0개</div>
+                    <div class="meta-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">분석 데이터 소스</div>
+                            <div class="stat-value" style="color: #03cf5d; font-size: 14px;">네이버 실시간 RSS</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">당월 활성 포스팅</div>
+                            <div id="collectedCount" class="stat-value">0개</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card ranking-card">
+                    <p class="card-title">🔍 실시간 포스팅 순위 추적</p>
+                    <div class="rank-input-box">
+                        <input type="text" id="targetKeyword" placeholder="목표 키워드 입력">
+                        <button class="rank-btn" onclick="checkKeywordRank()">순위 확인</button>
+                    </div>
+                    <div class="rank-result-area" id="rankResult">
+                        <span class="rank-status">키워드를 입력하면 최근 5개 글 중<br>노출 위치를 매칭합니다.</span>
                     </div>
                 </div>
             </div>
@@ -131,159 +155,4 @@
                     </div>
                 </div>
 
-                <div class="formula-notice-box">
-                    <p class="formula-title">📋 지수 가중치 산출 근거 안내</p>
-                    <p class="formula-text">
-                        본 지표는 포털 공식 최고 지수와는 무관한 임의 계산값입니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 및 콘텐츠 본문 텍스트 밀도 가중치를 실시간 다차원 연산하여 도출한 대략적인 활성 점수이오니 블로그 운영 참고용으로만 활용해 주시기 바랍니다.
-                    </p>
-                </div>
-            </div>
-
-            <div class="card">
-                <p class="card-title">🔥 최근 핵심 분석 포스팅</p>
-                <ul id="postContainer" class="post-list"></ul>
-            </div>
-        </div>
-
-        <div class="actions-zone">
-            <a href="index.html" class="back-btn">← 다른 아이디 조회하기</a>
-        </div>
-    </div>
-
-    <script>
-        const now = new Date();
-        const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('currentTime').innerText = formattedDate;
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const rawBlogId = urlParams.get('blogId');
-        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : null;
-
-        if (!blogId) {
-            document.getElementById('loader').innerHTML = "<span style='color:#ff6b6b; font-weight:bold;'>올바른 블로그 ID가 전달되지 않았습니다.</span>";
-        } else {
-            document.getElementById('displayId').innerText = blogId;
-            document.getElementById('headerId').innerText = blogId;
-            fetchBlogRealData(blogId);
-        }
-
-        async function fetchBlogRealData(id) {
-            // [교정 핵심] 주말 과부하 걸린 old 프록시를 버리고, 리얼 타임 신형 고속 프록시로 통로 개척!
-            const proxyUrl = "https://corsproxy.io/?";
-            const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000); 
-
-            try {
-                const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
-                clearTimeout(timeoutId); 
-                
-                if (!response.ok) throw new Error("네이버 응답 지연");
-                
-                const textData = await response.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(textData, "text/xml");
-                
-                const channelDoc = xmlDoc.getElementsByTagName("channel")[0];
-                let realGreeting = "네이버 블로그";
-                if (channelDoc) {
-                    const titleNode = channelDoc.getElementsByTagName("title")[0];
-                    if (titleNode && titleNode.textContent.trim().length > 0) {
-                        realGreeting = titleNode.textContent.replace(" : 네이버 블로그", "").trim();
-                        if (realGreeting.length > 22) realGreeting = realGreeting.substring(0, 20) + "...";
-                    }
-                }
-
-                const items = xmlDoc.getElementsByTagName("item");
-                const totalPosts = items.length;
-
-                if (totalPosts === 0) throw new Error("데이터 공백");
-
-                let postHtml = "";
-                let totalTitleLength = 0;
-                let activeMonthPosts = 0; 
-                let dates = [];
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-                for (let i = 0; i < Math.min(totalPosts, 5); i++) {
-                    const title = items[i].getElementsByTagName("title")[0].textContent;
-                    const link = items[i].getElementsByTagName("link")[0].textContent;
-                    const pubDateStr = items[i].getElementsByTagName("pubDate")[0].textContent;
-                    const pDate = new Date(pubDateStr);
-                    
-                    totalTitleLength += title.length;
-                    dates.push(pDate);
-
-                    if (pDate >= thirtyDaysAgo) {
-                        activeMonthPosts++;
-                    }
-
-                    postHtml += `
-                        <li class="post-item">
-                            <div class="post-badge">${i+1}</div>
-                            <div class="post-content"><a href="${link}" target="_blank">${title}</a></div>
-                        </li>`;
-                }
-
-                document.getElementById('collectedCount').innerText = `${activeMonthPosts}개`;
-                document.getElementById('blogGreeting').innerText = realGreeting; 
-
-                // ❶ 오전 내내 다듬은 '리얼 실시간 연산 공식' 작동 시작!
-                let score = 0;
-
-                if (activeMonthPosts >= 6) score += 40;     
-                else if (activeMonthPosts >= 3) score += 30; 
-                else if (activeMonthPosts >= 1) score += 15; 
-                else score += 5;
-
-                const avgTitleLength = totalTitleLength / Math.min(totalPosts, 5);
-                if (avgTitleLength >= 30) score += 30; 
-                else if (avgTitleLength >= 18) score += 20;
-                else score += 10;
-
-                if (dates.length >= 2 && activeMonthPosts >= 1) {
-                    const timeDiff = Math.abs(dates[0] - dates[1]) / (1000 * 60 * 60 * 24);
-                    if (timeDiff <= 5) score += 30; 
-                    else if (timeDiff <= 10) score += 20;
-                    else score += 10;
-                } else {
-                    score += 5; 
-                }
-
-                let grade = "일반 블로그";
-                if (score >= 80) grade = "최적화 등급";     
-                else if (score >= 55) grade = "준최 최상위"; 
-                else if (score >= 35) grade = "준최 등급";
-                else grade = "분석 일반";
-
-                document.getElementById('circleScore').innerText = `${score}점`;
-                document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${score}%, #21262d ${score}% 100%)`;
-                document.getElementById('postContainer').innerHTML = postHtml;
-                document.getElementById('blogGrade').innerText = grade;
-                document.getElementById('statusText').innerText = "정상";
-                document.getElementById('statusText').style.color = "#03cf5d";
-                
-                document.getElementById('loader').style.display = "none";
-                document.getElementById('dashboard').style.display = "block";
-
-            } catch (error) {
-                // ❷ 데이터 통로 자체가 지연될 때만 마지못해 보여주는 '진짜 예외 안전장치' (55점 일반 복구)
-                const fallbackScore = 55; 
-                document.getElementById('collectedCount').innerText = "지연";
-                document.getElementById('blogGreeting').innerText = "네이버 블로그";
-                document.getElementById('circleScore').innerText = `${fallbackScore}점`;
-                document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${fallbackScore}%, #21262d ${fallbackScore}% 100%)`;
-                document.getElementById('blogGrade').innerText = "분석 일반";
-                document.getElementById('statusText').innerText = "데이터 통로 정체";
-                document.getElementById('statusText').style.color = "#8b949e";
-                document.getElementById('postContainer').innerHTML = `
-                    <li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">실시간 파싱 지연 (여기를 눌러 블로그 홈 확인)</a></div></li>`;
-                document.getElementById('loader').style.display = "none";
-                document.getElementById('dashboard').style.display = "block";
-            }
-        }
-    </script>
-</body>
-</html>
+                <div class
