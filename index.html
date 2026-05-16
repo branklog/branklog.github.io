@@ -53,9 +53,6 @@
             padding: 30px 24px;
             box-shadow: 0 12px 32px rgba(0,0,0,0.4);
             margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px; /* 두 검색창 사이 간격 */
         }
         .input-group {
             text-align: left;
@@ -88,7 +85,8 @@
         .search-box input::placeholder {
             color: #484f58;
         }
-        .btn-common {
+        .btn-naver {
+            background: #03cf5d;
             color: #ffffff;
             border: none;
             padding: 10px 16px;
@@ -97,21 +95,12 @@
             font-weight: 700;
             cursor: pointer;
             transition: opacity 0.2s;
-            white-space: nowrap;
+            white-space: nowrap; /* 모바일 한 줄 정렬 방어 */
             flex-shrink: 0;
         }
-        .btn-naver { background: #03cf5d; }
-        .btn-keyword { background: #388bfd; } /* 키워드 창은 시각적 구분을 위해 블루 계열 포인트 */
-        
-        .btn-common:hover { opacity: 0.9; }
-        
-        .divider {
-            height: 1px;
-            background: #30363d;
-            border: none;
-            margin: 5px 0;
+        .btn-naver:hover {
+            opacity: 0.9;
         }
-
         .footer-notice {
             font-size: 11px;
             color: #6e7681;
@@ -127,24 +116,14 @@
             <img src="logo.svg" alt="BrankLog Logo">
             <span class="brand-text">Brank<span style="color: #03cf5d;">Log.</span></span>
         </div>
-        <p class="main-sub">네이버 블로그 및 키워드 실시간 빅데이터 분석 플랫폼</p>
+        <p class="main-sub">네이버 블로그 실시간 빅데이터 지수 분석 플랫폼</p>
 
         <div class="search-section">
             <div class="input-group">
                 <span class="input-label">블로그 지수 분석 (Naver)</span>
                 <div class="search-box">
-                    <input type="text" id="blogId" placeholder="네이버 블로그 아이디 입력" onkeypress="if(event.keyCode==13) startAnalysis('blog')">
-                    <button class="btn-common btn-naver" onclick="startAnalysis('blog')">분석하기</button>
-                </div>
-            </div>
-
-            <hr class="divider">
-
-            <div class="input-group">
-                <span class="input-label">키워드 노출 가치 분석 (Keyword)</span>
-                <div class="search-box">
-                    <input type="text" id="keywordId" placeholder="분석할 키워드 입력" onkeypress="if(event.keyCode==13) startAnalysis('keyword')">
-                    <button class="btn-common btn-keyword" onclick="startAnalysis('keyword')">분석하기</button>
+                    <input type="text" id="blogId" placeholder="네이버 블로그 아이디 입력" onkeypress="if(event.keyCode==13) startAnalysis()">
+                    <button class="btn-naver" onclick="startAnalysis()">분석하기</button>
                 </div>
             </div>
         </div>
@@ -156,17 +135,10 @@
     </div>
 
     <script>
-        function startAnalysis(type) {
-            if (type === 'blog') {
-                const id = document.getElementById('blogId').value.trim();
-                if (!id) return alert('네이버 블로그 아이디를 입력해주세요.');
-                location.href = `result.html?blogId=${encodeURIComponent(id)}`;
-            } else {
-                const keyword = document.getElementById('keywordId').value.trim();
-                if (!keyword) return alert('분석할 키워드를 입력해주세요.');
-                // 키워드 단독 분석은 독립된 파라미터로 전송
-                location.href = `result.html?keywordOnly=${encodeURIComponent(keyword)}`;
-            }
+        function startAnalysis() {
+            const id = document.getElementById('blogId').value.trim();
+            if (!id) return alert('네이버 블로그 아이디를 입력해주세요.');
+            location.href = `result.html?blogId=${encodeURIComponent(id)}`;
         }
     </script>
 </body>
