@@ -105,13 +105,18 @@
             margin: 0 0 4px 0;
         }
 
+        /* 🛠️ 유연한 텍스트 노출을 위해 고정 크기 제거 및 여백 조율 */
         .profile-tag {
             font-size: 12px;
             color: #8b949e;
             background: #21262d;
-            padding: 3px 8px;
-            border-radius: 20px;
+            padding: 5px 12px;
+            border-radius: 8px;
             display: inline-block;
+            max-width: 100%;
+            box-sizing: border-box;
+            word-break: break-all;
+            line-height: 1.4;
         }
 
         .meta-stats {
@@ -313,7 +318,7 @@
                 <div class="profile-zone">
                     <div class="profile-avatar">📁</div>
                     <p id="displayId" class="profile-id">-</p>
-                    <span class="profile-tag">미술·디자인·포트폴리오</span>
+                    <span id="blogDescription" class="profile-tag">네이버 블로그</span>
                 </div>
                 <div class="meta-stats">
                     <div class="stat-box">
@@ -384,25 +389,38 @@
             const proxyUrl = "https://api.allorigins.win/raw?url=";
             const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
 
-            // 🛠️ 핵심 강제 돌파 장치: 3초 타이머 고용 (3초 지나면 무조건 탈출시킴)
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000); 
 
             try {
                 const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
-                clearTimeout(timeoutId); // 3초 이내에 성공하면 타이머 해제
+                clearTimeout(timeoutId); 
                 
                 if (!response.ok) throw new Error("네이버 응답 지연");
                 
                 const textData = await response.text();
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(textData, "text/xml");
+                
+                // 🛠️ 보완 포인트: 네이버 블로그 고유의 채널 정보(소개글) 추출 장치
+                const channelDoc = xmlDoc.getElementsByTagName("channel")[0];
+                let blogDesc = "네이버 공식 블로그";
+                if (channelDoc) {
+                    const descNode = channelDoc.getElementsByTagName("description")[0];
+                    if (descNode && descNode.textContent.trim().length > 0) {
+                        blogDesc = descNode.textContent.trim();
+                        // 너무 길면 UI상 지저분하므로 앞의 30자만 슬라이스 커팅
+                        if (blogDesc.length > 30) blogDesc = blogDesc.substring(0, 30) + "...";
+                    }
+                }
+
                 const items = xmlDoc.getElementsByTagName("item");
                 const totalPosts = items.length;
 
                 if (totalPosts === 0) throw new Error("데이터 공백");
 
                 document.getElementById('collectedCount').innerText = `${totalPosts}개`;
+                document.getElementById('blogDescription').innerText = blogDesc; // 실시간 주입
 
                 let postHtml = "";
                 let totalTitleLength = 0;
@@ -482,13 +500,12 @@
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
-                // 🛠️ 3초 무한 로딩 탈출 시 강제 안착 구역
                 console.log("3초 타임아웃 강제 탈출 작동");
                 clearTimeout(timeoutId);
                 
-                // 검색 지연 시 기본으로 띄워줄 가장 예쁜 평균 시각화 스케일 (준최 58점)
                 const fallbackScore = 58; 
                 document.getElementById('collectedCount').innerText = "데이터 지연";
+                document.getElementById('blogDescription').innerText = "네이버 서비스 연동";
                 document.getElementById('circleScore').innerText = `${fallbackScore}점`;
                 document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${fallbackScore}%, #21262d ${fallbackScore}% 100%)`;
                 document.getElementById('blogGrade').innerText = "분석 일반";
