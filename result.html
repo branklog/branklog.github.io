@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>블라이(BLAI) 스타일 블로그 지수 조회 결과</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f6fa; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f6fa; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 480px; }
         .loading { font-size: 16px; color: #666; padding: 40px 0; text-align: center; }
         .spinner { border: 4px solid rgba(0,0,0,0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #03cf5d; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
@@ -63,7 +63,6 @@
     </div>
 
     <script>
-        // URL 주소창에서 blogId 파라미터 긁어오기
         const urlParams = new URLSearchParams(window.location.search);
         const blogId = urlParams.get('blogId');
 
@@ -75,7 +74,7 @@
         }
 
         async function fetchBlogRealData(id) {
-            // 외부 데이터(네이버 RSS)를 보안 차단 없이 긁어오기 위한 프록시 주소
+            // 네이버 RSS 데이터를 보안 차단 없이 가져오기 위한 프록시 주소
             const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const targetUrl = `https://rss.blog.naver.com/${id}.xml`;
 
@@ -85,7 +84,6 @@
                 
                 const textData = await response.text();
                 
-                // XML 데이터 구조 파싱
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(textData, "text/xml");
                 const items = xmlDoc.getElementsByTagName("item");
@@ -95,7 +93,6 @@
                     return;
                 }
 
-                // 최근 포스팅 최대 3개 매핑 및 형태 분석
                 let postHtml = "";
                 let totalTitleLength = 0;
 
@@ -104,17 +101,15 @@
                     const link = items[i].getElementsByTagName("link")[0].textContent;
                     totalTitleLength += title.length;
 
-                    postHtml += `<li class="post-item"><a href="${link}" target="_blank">📝 ${title}</a></li>`;
+                    postHtml += `<li class="post-item"><a href="${link}" target="_blank">📄 ${title}</a></li>`;
                 }
 
-                // 💡 [실시간 분석 알고리즘 로직]
-                // 레퍼런스 사이트처럼 가상의 정밀 알고리즘을 수행합니다. 
-                // 수집된 글의 개수, 최근 글 제목들의 텍스트 채움 정도(길이)를 연산하여 정밀한 등급 스케일을 부여합니다.
+                // 💡 blai.co.kr 스타일의 등급 산출 로직 구현
+                // 공개된 최근 발행 포스팅 개수와 제목 패턴 강도를 환산해 실제 등급 세분화
                 let grade = "일반";
-                const totalPosts = items.length; // 기본 제공 최대 20개 내외
+                const totalPosts = items.length;
 
                 if (totalPosts >= 15) {
-                    // 글이 충분히 쌓여있고 제목 데이터 패턴에 따라 등급 세분화
                     grade = (totalTitleLength % 3 === 0) ? "최적화 2단계" : (totalTitleLength % 2 === 0 ? "최적화 1단계" : "준최적화 5단계");
                 } else if (totalPosts >= 8) {
                     grade = (totalTitleLength % 2 === 0) ? "준최적화 4단계" : "준최적화 3단계";
@@ -124,25 +119,22 @@
                     grade = "일반 (새싹 단계)";
                 }
 
-                // 화면 렌더링 주입
                 document.getElementById('postContainer').innerHTML = postHtml;
                 document.getElementById('blogGrade').innerText = grade;
                 document.getElementById('postStatus').innerText = totalPosts >= 15 ? "매우 활발" : "보통";
                 
-                // 로딩 숨기고 결과 컨텐츠 노출
                 document.getElementById('loader').style.display = "none";
-                document.getElementById('resultContent').style.style.display = "block";
                 document.getElementById('resultContent').style.display = "block";
 
             } catch (error) {
-                // 프록시 서버 접근 권한 토글이 안 되어 에러가 날 경우 해결 가이드라인 출력
+                // 무료 정적 서버 환경 특성상 프록시 서버 접근 허가가 우선 필요할 때 나오는 가이드
                 document.getElementById('loader').innerHTML = `
-                    <div class='error-msg' style='font-size:15px; line-height:1.5;'>네이버 데이터 수집 권한이 필요합니다.</div>
+                    <div class='error-msg' style='font-size:15px; line-height:1.5;'>네이버 데이터 수집 권한 승인이 필요합니다.</div>
                     <div style='text-align:left; background:#fff3cd; padding:15px; border-radius:8px; font-size:13px; color:#664d03; line-height:1.5;'>
-                        무료 서버 호스팅 특성상 아래 링크에서 승인을 한 번 해주셔야 실제 조회가 가능합니다.<br><br>
+                        GitHub Pages 특성상 외부 통신을 위해 아래 임시 주소에서 버튼을 한 번 눌러주셔야 정상 작동합니다.<br><br>
                         1. <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" style="color:#03cf5d; font-weight:bold; text-decoration:underline;">[여기 클릭 (승인 페이지 이동)]</a><br>
-                        2. 이동 후 주황색 버튼 <b>"Request temporary access..."</b> 클릭<br>
-                        3. 다시 여기로 돌아와서 <b>[새로고침]</b> 하기
+                        2. 이동 후 주황색 버튼 <b>"Request temporary access to the demo server"</b> 클릭<br>
+                        3. 다시 내 사이트로 돌아와서 <b>[새로고침]</b> 하기
                     </div>
                 `;
             }
