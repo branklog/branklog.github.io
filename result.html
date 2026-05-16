@@ -32,7 +32,7 @@
     <div class="container">
         <div id="loader" class="loading">
             <div class="spinner"></div>
-            <b>네이버 오픈 RSS 데이터를 정밀 분석 중입니다</b>
+            <b>네이버 RSS 다차원 지표 분석 중입니다</b>
         </div>
         
         <div id="resultContent" class="blog-info">
@@ -43,18 +43,18 @@
             </div>
             
             <div class="info-row">
-                <span class="info-label">RSS 수집 포스팅 수</span>
-                <span id="collectedCount" class="info-value" style="color: #03cf5d;">0개</span>
+                <span class="info-label">분석 지표 스코어</span>
+                <span id="analysisScore" class="info-value" style="color: #03cf5d;">0점</span>
             </div>
 
             <div class="grade-box">
                 <p class="grade-title">종합 분석 지수</p>
-                <p id="blogGrade" class="grade-value">분석 중</p>
+                <p id="blogGrade" class="grade-value">연산 중</p>
             </div>
 
             <div class="info-row" style="background: transparent; padding: 0 5px; margin-bottom: 20px; border: none;">
                 <span class="info-label">데이터 분석 상태</span>
-                <span id="postStatus" class="info-value" style="color: #8b949e;">RSS 기반 통계 데이터</span>
+                <span id="postStatus" class="info-value" style="color: #8b949e;">RSS 다차원 가중치 연산 완료</span>
             </div>
             
             <div class="section-title">최근 발행 포스팅 리스트</div>
@@ -88,7 +88,6 @@
                 const items = xmlDoc.getElementsByTagName("item");
 
                 const totalPosts = items.length;
-                document.getElementById('collectedCount').innerText = `${totalPosts}개`;
 
                 if (totalPosts === 0) {
                     document.getElementById('loader').innerHTML = "<span class='error-msg'>존재하지 않는 아이디이거나 최근 발행 글이 없는 블로그입니다.</span>";
@@ -96,33 +95,67 @@
                 }
 
                 let postHtml = "";
-                for (let i = 0; i < Math.min(totalPosts, 3); i++) {
+                let totalTitleLength = 0;
+                let dates = [];
+
+                for (let i = 0; i < Math.min(totalPosts, 5); i++) {
                     const title = items[i].getElementsByTagName("title")[0].textContent;
                     const link = items[i].getElementsByTagName("link")[0].textContent;
-                    postHtml += `<li class="post-item"><a href="${link}" target="_blank">📄 ${title}</a></li>`;
+                    const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
+                    
+                    totalTitleLength += title.length;
+                    dates.push(new Date(pubDate));
+
+                    if (i < 3) {
+                        postHtml += `<li class="post-item"><a href="${link}" target="_blank">📄 ${title}</a></li>`;
+                    }
                 }
 
-                // 🛠️ 등급 밸런스 정밀 보정 (커트라인 대폭 상향버전)
-                let grade = "일반 블로그";
-                let statusText = "RSS 기반 실시간 판정";
+                // 🛠️ [정밀 가중치 계산 알고리즘 시작]
+                let score = 0;
 
-                if (totalPosts >= 18) {
-                    grade = "최적화 2단계 (RSS 활성)";
-                } else if (totalPosts >= 15) {
-                    grade = "최적화 1단계 (RSS 활성)";
-                } else if (totalPosts >= 10) {
-                    grade = "준최적화 5단계 (RSS 수집)";
-                } else if (totalPosts >= 6) {
-                    grade = "준최적화 4단계 (RSS 수집)";
-                } else if (totalPosts >= 3) {
-                    grade = "준최적화 2단계 (RSS 제한)";
+                // 1지표: 포스팅 볼륨 점수 (최대 40점)
+                if (totalPosts >= 18) score += 40;
+                else if (totalPosts >= 12) score += 30;
+                else if (totalPosts >= 6) score += 20;
+                else score += 10;
+
+                // 2지표: 콘텐츠 밀도 점수 - 제목 평균 글자 수 (최대 30점)
+                const avgTitleLength = totalTitleLength / Math.min(totalPosts, 5);
+                if (avgTitleLength >= 25) score += 30; // 제목이 길고 구체적임 (키워드 밀도 높음)
+                else if (avgTitleLength >= 15) score += 20;
+                else score += 10;
+
+                // 3지표: 발행 성실도 주기 점수 (최대 30점)
+                if (dates.length >= 2) {
+                    // 가장 최근 글과 그 전 글의 시간 차이 계산 (일 단위)
+                    const timeDiff = Math.abs(dates[0] - dates[1]) / (1000 * 60 * 60 * 24);
+                    if (timeDiff <= 3) score += 30; // 3일 이내 주기적인 발행 진행 중
+                    else if (timeDiff <= 7) score += 20;
+                    else score += 10;
                 } else {
-                    grade = "일반/신규 블로그";
+                    score += 10;
                 }
 
+                // 🏆 최종 합산 스코어 기반 엄격한 등급 밸런스 매칭
+                let grade = "일반 블로그";
+                if (score >= 90) {
+                    grade = "최적화 2단계";
+                } else if (score >= 75) {
+                    grade = "최적화 1단계";
+                } else if (score >= 60) {
+                    grade = "준최적화 5단계";
+                } else if (score >= 45) {
+                    grade = "준최적화 3단계";
+                } else if (score >= 30) {
+                    grade = "준최적화 1단계";
+                } else {
+                    grade = "일반 블로그";
+                }
+
+                document.getElementById('analysisScore').innerText = `${score}점`;
                 document.getElementById('postContainer').innerHTML = postHtml;
                 document.getElementById('blogGrade').innerText = grade;
-                document.getElementById('postStatus').innerText = statusText;
                 
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('resultContent').style.display = "block";
