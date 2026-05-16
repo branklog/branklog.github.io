@@ -157,28 +157,31 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const rawBlogId = urlParams.get('blogId');
-        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : "design_studio";
+        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : "Jhk_busan";
 
         document.getElementById('displayId').innerText = blogId;
         document.getElementById('headerId').innerText = blogId;
         fetchBlogRealData(blogId);
 
         async function fetchBlogRealData(id) {
-            // 💡 프록시 서버 캐시 강제 차단을 위해 랜덤 키 결합 구조 최적화
-            const cacheBuster = "&_cb=" + new Date().getTime();
-            const proxyUrl = "https://corsproxy.io/?";
-            const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`) + cacheBuster;
+            // 💡 [원천 해결] corsproxy 내부 주소 파괴 문제를 극복하기 위해 하이엔드 전용 프록시 API 통로 이식 완료
+            const cacheBuster = btoa(new Date().getTime());
+            const targetNaverUrl = `https://rss.blog.naver.com/${id}.xml?_cb=${cacheBuster}`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetNaverUrl)}`;
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 6000); 
 
             try {
-                const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
+                const response = await fetch(proxyUrl, { signal: controller.signal });
                 clearTimeout(timeoutId); 
                  
-                if (!response.ok) throw new Error("네이버 응답 지연");
+                if (!response.ok) throw new Error("네이버 데이터 통신 실패");
                  
-                const textData = await response.text();
+                // allorigins 프록시는 받아온 XML 데이터를 JSON 객체 내부의 'contents' 키에 보관하여 반환합니다.
+                const jsonResult = await response.json();
+                const textData = jsonResult.contents;
+
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(textData, "text/xml");
                  
@@ -322,7 +325,7 @@
                         <div style="background: #21262d; color: #03cf5d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">🏆</div>
                         <div style="text-align: left;">
                             <span style="color:#8b949e; font-size:12px; display:block;">실시간 채널 성향 판정</span>
-                            <b style="color:#ffffff; font-size:16px;">${matchedCategory} 전문형 블로그</b>
+                            <b style="color:#ffffff; font-size:16px;">${matchedCategory} 전문형 채널</b>
                         </div>
                     </li>
                     <li class="post-item" style="list-style: none; background: #0d1117; padding: 14px 16px; border-radius: 10px; border: 1px solid #21262d; color:#c9d1d9; font-size:14px; line-height:1.4; margin-bottom: 10px; text-align: left;">
@@ -346,7 +349,7 @@
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
-                // 🛑 가짜 시연용 디자인 정보 완전 삭제: 통신 장애 발생 시 정중한 실패 안내 공지만 출력
+                // 🛑 가짜 시연 데이터 원천 차단: 프록시 서버 연동 문제 발생 시 정중한 실패 공지 레이아웃만 출력
                 document.getElementById('realtimeDataSource').innerText = "연동 정체";
                 document.getElementById('realtimeDataSource').style.color = "#ff6b6b";
                 document.getElementById('blogGreeting').innerText = "데이터 수신 지연";
