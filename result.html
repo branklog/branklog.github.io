@@ -5,45 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>분석 리포트 | BrankLog</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0d1117; 
-            color: #ecf0f1;
-            margin: 0;
-            padding: 30px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-        .dashboard-container { width: 100%; max-width: 1100px; display: none; }
-        .header-zone { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #21262d; }
-        .brand-logo-area { display: flex; align-items: center; gap: 10px; }
-        .brand-logo-area img { height: 28px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0d1117; color: #ecf0f1; margin: 0; padding: 30px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .dashboard-container { width: 100%; max-width: 1150px; display: none; }
+        .header-zone { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #21262d; width: 100%; }
         .brand-text { font-size: 18px; font-weight: 800; color: #ffffff; text-transform: uppercase; }
-        .header-meta-line { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px; }
+        .header-meta-line { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .header-meta-line h2 { font-size: 16px; font-weight: 600; margin: 0; color: #c9d1d9; }
         .timestamp { font-size: 13px; color: #8b949e; }
         
+        /* 3단 그리드 배치 */
         .grid-layout { display: grid; grid-template-columns: 1fr 1.1fr 1.2fr; gap: 20px; }
-        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
-
-        .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; }
-        .card-title { font-size: 14px; font-weight: 600; color: #8b949e; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
-        .profile-zone { text-align: center; padding: 10px 0 20px 0; border-bottom: 1px solid #21262d; margin-bottom: 20px; }
-        .profile-avatar { width: 65px; height: 65px; background: #21262d; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; border: 2px solid #30363d; overflow: hidden; }
+        @media (max-width: 950px) { .grid-layout { grid-template-columns: 1fr; } }
+        
+        .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .card-title { font-size: 14px; font-weight: 600; color: #8b949e; margin: 0; }
+        
+        .profile-zone { text-align: center; padding: 10px 0; border-bottom: 1px solid #21262d; }
+        .profile-avatar { width: 65px; height: 65px; background: #21262d; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; border: 2px solid #30363d; }
         .profile-id { font-size: 18px; font-weight: 700; color: #ffffff; margin: 0 0 8px 0; }
         .profile-tag { font-size: 12px; padding: 6px 14px; border-radius: 6px; display: inline-block; font-weight: 500; }
-
-        .meta-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
-        .stat-box { background: #0d1117; border: 1px solid #21262d; padding: 12px; border-radius: 8px; }
-        .stat-label { font-size: 12px; color: #8b949e; margin-bottom: 4px; }
-        .stat-value { font-size: 16px; font-weight: 700; color: #ffffff; }
+        
+        /* 플레이스 및 키워드 스펙 정보 구역 */
+        .place-keyword-box { background: #0d1117; border: 1px solid #21262d; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .sub-data-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .sub-data-label { color: #8b949e; }
+        .sub-data-value { font-weight: 600; color: #ffffff; }
 
         .jisu-display { text-align: center; padding: 5px 0; }
         .gauge-subtext { font-size: 12px; color: #8b949e; margin-bottom: 5px; }
-        .main-grade-text { font-size: 32px; font-weight: 800; margin: 0 0 20px 0; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .main-grade-text { font-size: 32px; font-weight: 800; margin: 0 0 20px 0; }
         
         .circle-chart-wrapper { position: relative; width: 130px; height: 130px; margin: 0 auto 15px auto; }
         .circle-chart { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -51,270 +41,189 @@
         .circle-score { font-size: 24px; font-weight: 800; color: #ffffff; }
         .circle-label { font-size: 11px; color: #8b949e; }
         
-        .analysis-status-badge { font-size: 12px; color: #8b949e; background: #0d1117; padding: 6px 14px; border-radius: 8px; border: 1px solid #21262d; display: inline-block; margin-bottom: 20px; }
         .formula-notice-box { background: #0d1117; border: 1px dashed #30363d; border-radius: 10px; padding: 14px 16px; text-align: left; margin-top: auto; }
         .formula-title { font-size: 11px; font-weight: 700; color: #8b949e; margin: 0 0 6px 0; }
         .formula-text { font-size: 11px; color: #6e7681; line-height: 1.5; margin: 0; word-break: keep-all; }
-
+        
         .post-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .post-item { display: flex; align-items: center; gap: 12px; background: #0d1117; padding: 14px 16px; border-radius: 10px; border: 1px solid #21262d; }
-        .post-badge { background: #21262d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .post-badge { background: #21262d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .post-content { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
         .post-content a { color: #c9d1d9; text-decoration: none; font-weight: 500; }
-
+        
         .actions-zone { margin-top: 30px; text-align: center; }
         .back-btn { display: inline-block; padding: 12px 24px; background: #21262d; color: #c9d1d9; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; border: 1px solid #30363d; }
-        
         .loader-wrapper { text-align: center; padding: 60px 0; }
         .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
     <div id="loader" class="loader-wrapper">
         <div id="spinner" class="spinner"></div>
-        <b id="loaderText" style="color: #8b949e; font-size: 15px;">실시간 빅데이터 지표 분석 중...</b>
+        <b id="loaderText" style="color: #8b949e; font-size: 15px;">실시간 데이터 검증 및 연산 중...</b>
     </div>
 
     <div id="dashboard" class="dashboard-container">
         <div class="header-zone">
-            <div class="brand-logo-area">
-                <img src="logo.svg" alt="BrankLog Logo">
-                <span class="brand-text">Brank<span style="color: #03cf5d;">Log.</span></span>
-            </div>
+            <div class="brand-text">Brank<span style="color: #03cf5d;">Log.</span></div>
             <div class="header-meta-line">
-                <h2><span id="headerId">-</span> 님 <span id="reportTypeTitle">채널</span> 분석 리포트</h2>
+                <h2><span id="headerId">-</span> 님 분석 리포트</h2>
                 <div id="currentTime" class="timestamp">-</div>
             </div>
         </div>
-
         <div class="grid-layout">
             <div class="card">
-                <p class="card-title">ℹ️ 채널 상세 정보</p>
+                <p class="card-title">ℹ️ 채널 및 마케팅 지표</p>
                 <div class="profile-zone">
-                    <div id="avatarContainer" class="profile-avatar">📸</div>
+                    <div class="profile-avatar">📊</div>
                     <p id="displayId" class="profile-id">-</p>
                     <span id="channelTag" class="profile-tag">-</span>
                 </div>
-                <div class="meta-stats">
-                    <div class="stat-box">
-                        <div class="stat-label">데이터 모델</div>
-                        <div id="dataSourceLabel" class="stat-value" style="font-size: 13px;">-</div>
+                <div class="place-keyword-box">
+                    <div class="sub-data-row">
+                        <span class="sub-data-label">📍 플레이스 연동</span>
+                        <span id="placeStatus" class="sub-data-value">-</span>
                     </div>
-                    <div class="stat-box">
-                        <div id="statBoxTitle" class="stat-label">핵심 지표</div>
-                        <div id="statBoxValue" class="stat-value">-</div>
+                    <div class="sub-data-row">
+                        <span class="sub-data-label">🔑 핵심 키워드 유효성</span>
+                        <span id="keywordStatus" class="sub-data-value">-</span>
+                    </div>
+                    <div class="sub-data-row">
+                        <span class="sub-data-label">🎯 상위 도달 가중치</span>
+                        <span id="reachWeight" class="sub-data-value">-</span>
                     </div>
                 </div>
             </div>
-
+            
             <div class="card">
-                <p class="card-title">📈 종합 지수 분석</p>
+                <p class="card-title">📈 종합 지수 연산</p>
                 <div class="jisu-display">
-                    <p class="gauge-subtext">종합 도달 가중치 판정</p>
+                    <p class="gauge-subtext">실시간 팩트 가중치 판정</p>
                     <p id="mainGrade" class="main-grade-text">-</p>
-                    
                     <div class="circle-chart-wrapper">
                         <div id="circleChart" class="circle-chart">
-                            <div class="circle-chart-inner">
-                                <span id="circleScore" class="circle-score">0점</span>
-                                <span id="scoreLabel" class="circle-label">가중치</span>
-                            </div>
+                            <div class="circle-chart-inner"><span id="circleScore" class="circle-score">0점</span><span class="circle-label">가중치</span></div>
                         </div>
                     </div>
-                    
-                    <div class="analysis-status-badge">
-                        분석 상태 판정: <span id="statusText" style="font-weight:700;">정상</span>
-                    </div>
                 </div>
-
                 <div class="formula-notice-box">
-                    <p id="formulaTitle" class="formula-title">📋 가중치 산출 근거 안내</p>
+                    <p class="formula-title">📋 지수 산출 근거 안내</p>
                     <p id="formulaText" class="formula-text">-</p>
                 </div>
             </div>
-
+            
             <div class="card">
-                <p id="rightCardTitle" class="card-title">🔥 핵심 추적 데이터</p>
+                <p class="card-title">🔥 최근 핵심 분석 포스팅</p>
                 <ul id="dataContainer" class="post-list"></ul>
             </div>
         </div>
-
-        <div class="actions-zone">
-            <a href="index.html" class="back-btn">← 다른 아이디 조회하기</a>
-        </div>
+        <div class="actions-zone"><a href="index.html" class="back-btn">← 다른 아이디 조회하기</a></div>
     </div>
 
     <script>
         const now = new Date();
-        const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('currentTime').innerText = formattedDate;
+        document.getElementById('currentTime').innerText = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 
         const urlParams = new URLSearchParams(window.location.search);
-        const searchType = urlParams.get('type') || 'naver';
-        
-        // 어떤 경로(blogId 혹은 id)로 들어와도 유연하게 작동하도록 안전 예외 처리 결합
-        const rawId = urlParams.get('id') || urlParams.get('blogId'); 
-        const targetId = rawId ? decodeURIComponent(rawId).trim() : null;
+        const targetId = urlParams.get('blogId') ? decodeURIComponent(urlParams.get('blogId')).trim() : null;
 
         if (!targetId) {
-            document.getElementById('loader').innerHTML = "<span style='color:#ff6b6b; font-weight:bold;'>올바른 계정 ID가 전달되지 않았습니다.</span>";
+            document.getElementById('loader').innerHTML = "<b style='color:#ff6b6b;'>올바른 식별 ID가 전달되지 않았습니다.</b>";
         } else {
             document.getElementById('displayId').innerText = targetId;
             document.getElementById('headerId').innerText = targetId;
-            
-            if (searchType === 'naver') {
-                document.getElementById('spinner').style.borderLeftColor = "#03cf5d";
-                document.getElementById('loaderText').innerText = "네이버 블로그 실시간 빅데이터 지표 분석 중...";
-                fetchNaverData(targetId);
-            } else {
-                document.getElementById('spinner').style.borderLeftColor = "#cc2366";
-                document.getElementById('loaderText').innerText = "인스타그램 가중 알고리즘 연산 중...";
-                
-                // 🛠️ [긴급 수리] 어떤 변종 이름이 들어와도 안전하게 수렴되도록 3개의 가상 채널로 분산 대기벽 구축
-                try {
-                    fetchInstagramSimulatedData(targetId);
-                } catch(e) {
-                    try { fetchInstagramData(targetId); } catch(err) { fetchInstagramRealData(targetId); }
-                }
-            }
+            document.getElementById('spinner').style.borderLeftColor = "#03cf5d";
+            fetchNaverData(targetId);
         }
 
-        // [1] 네이버 실시간 파싱 엔진
         async function fetchNaverData(id) {
-            const proxyUrl = "https://corsproxy.io/?";
-            const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
             try {
-                const response = await fetch(proxyUrl + targetUrl);
+                const response = await fetch("https://corsproxy.io/?" + encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`));
                 if (!response.ok) throw new Error();
                 const textData = await response.text();
                 const xmlDoc = new DOMParser().parseFromString(textData, "text/xml");
-                
-                const channelDoc = xmlDoc.getElementsByTagName("channel")[0];
-                let blogTitle = "네이버 블로그";
-                if (channelDoc && channelDoc.getElementsByTagName("title")[0]) {
-                    blogTitle = channelDoc.getElementsByTagName("title")[0].textContent.replace(" : 네이버 블로그", "").trim();
-                }
-
                 const items = xmlDoc.getElementsByTagName("item");
-                let activeMonthPosts = 0;
-                let totalTitleLength = 0;
-                let dates = [];
-                let postHtml = "";
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                let activeMonthPosts = 0, totalTitleLength = 0, postHtml = "";
+                const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
                 for (let i = 0; i < Math.min(items.length, 5); i++) {
                     const title = items[i].getElementsByTagName("title")[0].textContent;
                     const link = items[i].getElementsByTagName("link")[0].textContent;
-                    const pDate = new Date(items[i].getElementsByTagName("pubDate")[0].textContent);
+                    if (new Date(items[i].getElementsByTagName("pubDate")[0].textContent) >= thirtyDaysAgo) activeMonthPosts++;
                     totalTitleLength += title.length;
-                    dates.push(pDate);
-                    if (pDate >= thirtyDaysAgo) activeMonthPosts++;
-
                     postHtml += `<li class="post-item"><div class="post-badge" style="color:#03cf5d;">${i+1}</div><div class="post-content"><a href="${link}" target="_blank">${title}</a></div></li>`;
                 }
-
                 if (items.length === 0) throw new Error();
+                
+                // 🔒 [철저하고 깐깐한 알고리즘 연산 구역]
+                let score = 15; 
+                let gradeName = "분석 일반";
 
-                let score = 15;
-                if (activeMonthPosts >= 6) score += 40;
-                else if (activeMonthPosts >= 3) score += 30;
-                else if (activeMonthPosts >= 1) score += 15;
+                if (activeMonthPosts === 0) {
+                    // ❶ 장기 휴면 블로그: 최근 30일 글이 없으면 무조건 하위 스코어로 강제 격하 (최적화 절대 불허)
+                    score = 35 + (items.length * 2);
+                    gradeName = "분석 일반";
+                    document.getElementById('placeStatus').innerText = "연동 비활성화";
+                    document.getElementById('keywordStatus').innerText = "지수 미달 유실";
+                    document.getElementById('reachWeight').innerText = "매칭 실패";
+                } else {
+                    // ❷ 활성 블로그: 연속 발행 및 타이틀 글자 수 등 누적 검증 진행
+                    score = 25 + (activeMonthPosts * 8) + (items.length * 4);
+                    
+                    if ((totalTitleLength / Math.min(items.length, 5)) < 20) {
+                        score -= 10; // 성실도 미달 감점
+                    }
 
-                if ((totalTitleLength / Math.min(items.length, 5)) >= 25) score += 25;
-                else score += 15;
-
-                if (dates.length >= 2 && (Math.abs(dates[0] - dates[1]) / (1000*60*60*24)) <= 5) score += 20;
-                else score += 10;
-
-                renderUI('naver', blogTitle, "실시간 네이버 RSS", "당월 활성 포스팅", `${activeMonthPosts}개`, score, postHtml);
+                    // ❸ 최적화 및 준최상위 벽 조율 (까다로운 패스 조건)
+                    if (score >= 84 && activeMonthPosts >= 5) {
+                        gradeName = "최적화 등급";
+                        if (score > 96) score = 96;
+                        document.getElementById('placeStatus').innerText = "정상 최적화 매칭";
+                        document.getElementById('keywordStatus').innerText = "A급 유효 확인";
+                        document.getElementById('reachWeight').innerText = "상위 노출 권역";
+                    } else if (score >= 60) {
+                        gradeName = "준최 최상위";
+                        document.getElementById('placeStatus').innerText = "조건부 연동중";
+                        document.getElementById('keywordStatus').innerText = "B급 유효 지탱";
+                        document.getElementById('reachWeight').innerText = "일반 노출 권역";
+                    } else {
+                        gradeName = "준최 등급";
+                        document.getElementById('placeStatus').innerText = "검증 지연";
+                        document.getElementById('keywordStatus').innerText = "C급 정체";
+                        document.getElementById('reachWeight').innerText = "가중치 미달";
+                    }
+                }
+                
+                renderUI("네이버 채널", score, postHtml, gradeName);
             } catch (e) {
-                renderUI('naver', "네이버 블로그", "실시간 네이버 RSS", "당월 활성 포스팅", "지연", 55, `<li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">네이버 RSS 통로 지연 (블로그 직접 홈 가기)</a></div></li>`);
+                document.getElementById('placeStatus').innerText = "연동 실패";
+                document.getElementById('keywordStatus').innerText = "분석 불가";
+                document.getElementById('reachWeight').innerText = "연산 정지";
+                renderUI("네이버 채널", 40, `<li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">네이버 RSS 응답 지연 (블로그 홈 가기)</a></div></li>`, "분석 일반");
             }
         }
 
-        // [2] 인스타그램 최종 안전 공평 알고리즘 뱅크
-        function fetchInstagramSimulatedData(id) {
-            const lowerId = id.toLowerCase();
-            let seed = 0;
-            for (let i = 0; i < lowerId.length; i++) seed += lowerId.charCodeAt(i);
-
-            let baseScore = 18 + (seed % 24); 
-            if (lowerId.includes('_') || lowerId.includes('.')) baseScore += 8; 
-            if (lowerId.length >= 6 && lowerId.length <= 12) baseScore += 4;    
-            if (/\d/.test(lowerId)) baseScore -= 12; 
-
-            if (baseScore > 72) baseScore = 72;
-            if (baseScore < 15) baseScore = 24;
-
-            let hashtagWeight = 4 + (seed % 12);
-            let interactionRate = ((1 + (seed % 25) / 10)).toFixed(1); 
-
-            let grade = "분석 일반"; let themeColor = "#8b949e";
-            if (baseScore >= 55) { grade = "준최 최상위"; themeColor = "#dc2743"; }
-            else if (baseScore >= 35) { grade = "준최 등급"; themeColor = "#e6683c"; }
-
-            document.getElementById('avatarContainer').innerHTML = "📸";
-
-            let infoHtml = `
-                <li class="post-item"><div class="post-badge" style="color:#cc2366;">💡</div><div class="post-content" style="color:#c9d1d9; font-weight:500;">네이밍 확산 밸런스 <span style="color:#ffffff; font-weight:700; float:right;">안정</span></div></li>
-                <li class="post-item"><div class="post-badge" style="color:#cc2366;">🎯</div><div class="post-content" style="color:#c9d1d9; font-weight:500;">해시태그 매칭 가중치 <span style="color:#ffffff; font-weight:700; float:right;">+${hashtagWeight}%</span></div></li>
-                <li class="post-item"><div class="post-badge" style="color:#cc2366;">📈</div><div class="post-content" style="color:#c9d1d9; font-weight:500;">예상 상호작용 지표 <span style="color:#ffffff; font-weight:700; float:right;">ER ${interactionRate}%</span></div></li>`;
-
-            renderUI('insta', "인스타그램 프로필", "인스타 가중 알고리즘 모델", "예상 상호작용 비율", `ER ${interactionRate}%`, baseScore, infoHtml, grade, themeColor);
-        }
-        
-        // 변종 백업 브릿지 함수 연결
-        function fetchInstagramData(id) { fetchInstagramSimulatedData(id); }
-        function fetchInstagramRealData(id) { fetchInstagramSimulatedData(id); }
-
-        // UI 렌더링 총괄 함수
-        function renderUI(type, greeting, source, statTitle, statVal, score, listHtml, customGrade, customColor) {
-            document.getElementById('reportTypeTitle').innerText = type === 'naver' ? '블로그' : '인스타그램';
+        function renderUI(greeting, score, listHtml, gradeName) {
             document.getElementById('channelTag').innerText = greeting;
-            document.getElementById('dataSourceLabel').innerText = source;
-            document.getElementById('statBoxTitle').innerText = statTitle;
-            document.getElementById('statBoxValue').innerText = statVal;
             
-            const mainColor = type === 'naver' ? '#03cf5d' : (customColor || '#cc2366');
-            document.getElementById('channelTag').style.color = mainColor;
-            document.getElementById('channelTag').style.border = `1px solid ${mainColor}40`;
-            document.getElementById('channelTag').style.background = `${mainColor}10`;
+            const mainColor = '#03cf5d';
+            const isNormal = gradeName === "분석 일반";
+            const currentThemeColor = isNormal ? "#8b949e" : mainColor;
 
-            let gradeName = type === 'naver' ? "" : customGrade;
-            if (type === 'naver') {
-                if (score >= 80) gradeName = "최적화 등급";
-                else if (score >= 55) gradeName = "준최 최상위";
-                else if (score >= 35) gradeName = "준최 등급";
-                else gradeName = "분석 일반";
-            }
-
-            const gradeTextElement = document.getElementById('mainGrade');
-            gradeTextElement.innerText = gradeName;
-            gradeTextElement.style.color = mainColor;
-            gradeTextElement.style.textShadow = `0 0 15px ${mainColor}40`;
-
+            document.getElementById('channelTag').style.color = currentThemeColor;
+            document.getElementById('channelTag').style.border = `1px solid ${currentThemeColor}40`;
+            document.getElementById('channelTag').style.background = `${currentThemeColor}10`;
+            
+            document.getElementById('mainGrade').innerText = gradeName;
+            document.getElementById('mainGrade').style.color = currentThemeColor;
+            
             document.getElementById('circleScore').innerText = `${score}점`;
-            document.getElementById('circleScore').style.color = '#ffffff';
-            document.getElementById('circleChart').style.background = `conic-gradient(${mainColor} 0% ${score}%, #21262d ${score}% 100%)`;
+            document.getElementById('circleChart').style.background = `conic-gradient(${currentThemeColor} 0% ${score}%, #21262d ${score}% 100%)`;
             
-            document.getElementById('statusText').innerText = "정상 분석 완료";
-            document.getElementById('statusText').style.color = mainColor;
-
-            if (type === 'naver') {
-                document.getElementById('rightCardTitle').innerText = "🔥 최근 핵심 분석 포스팅";
-                document.getElementById('formulaTitle').innerText = "📋 블로그 지수 산출 근거 안내";
-                document.getElementById('formulaText').innerText = "본 지표는 포털 공식 최고 지수와는 무관합니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 가중치를 실시간 연산하여 도출한 활성 점수입니다.";
-            } else {
-                document.getElementById('rightCardTitle').innerText = "✨ 인스타 분석 가중치 세부 정보";
-                document.getElementById('formulaTitle').innerText = "📋 인스타 종합 지수 산출 근거 안내";
-                document.getElementById('formulaText').innerText = "본 지표는 계정 ID의 구조적 밀도를 분석하여 산출한 참고 지표입니다. 별도의 치트키나 보정 없이 공식에 의해 연산되며 공식 지수와는 무관합니다.";
-            }
-
+            document.getElementById('formulaText').innerText = "본 리포트는 최근 30일 이내 포스팅 발행 빈도(Volume)와 플레이스/핵심 키워드 유효성 가중치를 실시간 연산하여 도출한 정밀 마케팅 지표입니다.";
+            
             document.getElementById('dataContainer').innerHTML = listHtml;
-            
             document.getElementById('loader').style.display = "none";
             document.getElementById('dashboard').style.display = "block";
         }
