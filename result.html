@@ -157,21 +157,20 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const rawBlogId = urlParams.get('blogId');
-        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : "Jhk_busan";
+        const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : "design_studio";
 
         document.getElementById('displayId').innerText = blogId;
         document.getElementById('headerId').innerText = blogId;
         fetchBlogRealData(blogId);
 
         async function fetchBlogRealData(id) {
-            // 💡 [주소 결합 오류 완벽 복구] 타임스탬프 파라미터가 인코딩 함수 밖으로 정상 분리되었습니다.
+            // 💡 프록시 서버 캐시 강제 차단을 위해 랜덤 키 결합 구조 최적화
             const cacheBuster = "&_cb=" + new Date().getTime();
             const proxyUrl = "https://corsproxy.io/?";
             const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`) + cacheBuster;
 
             const controller = new AbortController();
-            // 타임아웃을 5초로 넉넉하게 지정하여 안정적인 네트워크 환경 보장
-            const timeoutId = setTimeout(() => controller.abort(), 5000); 
+            const timeoutId = setTimeout(() => controller.abort(), 6000); 
 
             try {
                 const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
@@ -270,11 +269,11 @@
                 const specializedCategories = [
                     { name: "자동차", keywords: ["자동차", "차량", "시승기", "출고", "수입차", "국산차", "전기차", "중고차", "튜닝", "정비", "타이어", "엔진오일", "세차", "썬팅", "광택", "블랙박스", "네비", "휠", "도색", "랩핑", "덴트", "유리막", "디테일링", "브레이크", "서스펜션", "배기", "카니발", "쏘렌토", "아반떼", "그랜저"] },
                     { name: "미술·디자인", keywords: ["디자인", "디자이너", "미술", "로고", "브랜딩", "패키지", "라벨", "시각디자인", "포스터", "일러스트", "굿즈", "전시", "그림", "리플렛", "리플릿", "배너", "간판"] },
-                    { name: "패션·뷰티", keywords: ["화장품", "립스틱", "데일리룩", "코디", "메이크업", "향수", "패션", "스킨", "로션", "앰플", "쿠션", "선크림"] },
-                    { name: "맛집", keywords: ["맛집", "카페", "추천", "식당", "고기집", "술집", "핫플", "존맛", "푸드"] },
-                    { name: "IT·컴퓨터", keywords: ["아이폰", "갤럭시", "윈도우", "맥북", "전자기기", "테크", "컴퓨터", "프로그램", "앱", "IT", "AI"] },
-                    { name: "비즈니스·경제", keywords: ["주식", "투자", "부동산", "재테크", "창업", "대출", "금융", "세금", "연금", "보험"] },
-                    { name: "일상·생각", keywords: ["일상", "일기", "생각", "주말", "기록", "오늘", "하루", "소통", "근황"] }
+                    { name: "패션·뷰티", keywords: ["화장품", "립스틱", "데일리룩", "코디", "메이크업", "향수", "패션", "스킨", "로션", "앰플", "쿠션", "의류", "뷰티템", "네일", "헤어", "스타일링", "오오티디", "ootd", "선크림", "틴트"] },
+                    { name: "맛집", keywords: ["맛집", "카페", "추천", "식당", "고기집", "술집", "핫플", "존맛", "먹스타그램", "푸드", "점심메뉴", "회식", "데이트코스", "로컬맛집"] },
+                    { name: "IT·컴퓨터", keywords: ["아이폰", "갤럭시", "윈도우", "맥북", "전자기기", "테크", "애플", "삼성", "폰", "워치", "패드", "컴퓨터", "프로그램", "앱", "소프트웨어", "IT", "AI", "챗GPT", "얼리어답터"] },
+                    { name: "비즈니스·경제", keywords: ["주식", "투자", "부동산", "재테크", "창업", "대출", "지원금", "금융", "코인", "비트코인", "공모주", "세금", "연금", "보험", "청약", "경매", "소상공인"] },
+                    { name: "일상·생각", keywords: ["일상", "일기", "생각", "주말", "기록", "오늘", "하루", "소통", "잡담", "소소한", "이웃", "일주일", "일상블로그", "근황"] }
                 ];
 
                 let combinedTitles = "";
@@ -323,7 +322,7 @@
                         <div style="background: #21262d; color: #03cf5d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">🏆</div>
                         <div style="text-align: left;">
                             <span style="color:#8b949e; font-size:12px; display:block;">실시간 채널 성향 판정</span>
-                            <b style="color:#ffffff; font-size:16px;">${matchedCategory} 전문형 채널</b>
+                            <b style="color:#ffffff; font-size:16px;">${matchedCategory} 전문형 블로그</b>
                         </div>
                     </li>
                     <li class="post-item" style="list-style: none; background: #0d1117; padding: 14px 16px; border-radius: 10px; border: 1px solid #21262d; color:#c9d1d9; font-size:14px; line-height:1.4; margin-bottom: 10px; text-align: left;">
@@ -340,14 +339,14 @@
                     </li>
                     ${postHtml}
                 `;
-                 
+
                 document.getElementById('noticeBody').innerText = "본 지표는 포털 공식 최고 지수와는 무관한 임의 계산값입니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 및 콘텐츠 본문 텍스트 밀도 가중치를 실시간 다차원 연산하여 도출한 대략적인 활성 점수이오니 블로그 운영 참고용으로만 활용해 주시기 바랍니다.";
 
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
-                // 가짜 데이터 완전 배제: 에러 발생 시 정중한 실패 안내 UI 출력
+                // 🛑 가짜 시연용 디자인 정보 완전 삭제: 통신 장애 발생 시 정중한 실패 안내 공지만 출력
                 document.getElementById('realtimeDataSource').innerText = "연동 정체";
                 document.getElementById('realtimeDataSource').style.color = "#ff6b6b";
                 document.getElementById('blogGreeting').innerText = "데이터 수신 지연";
@@ -364,6 +363,8 @@
                         현재 네이버 데이터 허브의 응답이 일시적으로 지연되고 있습니다.<br>
                         잠시 후 다시 조회해 주시기 바랍니다.
                     </li>`;
+
+                document.getElementById('noticeBody').innerText = "본 지표는 포털 공식 최고 지수와는 무관한 임의 계산값입니다. 최근 30일 이내 당월 포스팅 업로드 빈도(Volume), 발행 주기 성실도(Frequency), 제목 및 콘텐츠 본문 텍스트 밀도 가중치를 실시간 다차원 연산하여 도출한 대략적인 활성 점수이오니 블로그 운영 참고용으로만 활용해 주시기 바랍니다.";
 
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('dashboard').style.display = "block";
