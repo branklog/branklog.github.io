@@ -176,14 +176,15 @@
             return true;
         }
 
-        function validatePlace() {
-            const val = document.getElementById('placeNameInput').value.trim();
-            if(!val) {
-                alert('검색할 매장 상호명을 입력해 주세요.');
-                return false;
-            }
-            return true;
-        }
+       function startPlaceAnalysis() {
+    const val = document.getElementById('placeNameInput').value.trim();
+    if (!val) {
+        alert('검색할 매장 상호명을 입력해 주세요.');
+        return;
+    }
+    // 새로 만든 place.html 파일로 주소창 쿼리를 들고 깨끗하게 이동시킵니다.
+    window.location.href = `place.html?placeQuery=${encodeURIComponent(val)}`;
+}
     </script>
   
 </body>
