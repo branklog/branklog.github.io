@@ -5,296 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>블로그 지수 분석 블랭크로그 | BlankLog</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0d1117; 
-            color: #ecf0f1;
-            margin: 0;
-            padding: 30px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .dashboard-container {
-            width: 100%;
-            max-width: 1100px; 
-            display: none; 
-        }
-
-        .header-zone {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #21262d;
-        }
-
-        .header-zone h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 0;
-            color: #ffffff;
-        }
-
-        .header-zone h2 span {
-            color: #03cf5d;
-        }
-
-        .timestamp {
-            font-size: 13px;
-            color: #8b949e;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr 1.2fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .grid-layout { grid-template-columns: 1fr; }
-        }
-
-        .card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #8b949e;
-            margin-top: 0;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .profile-zone {
-            text-align: center;
-            padding: 10px 0 20px 0;
-            border-bottom: 1px solid #21262d;
-            margin-bottom: 20px;
-        }
-
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
-            background: #21262d;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-bottom: 10px;
-            border: 1px solid #30363d;
-        }
-
-        .profile-id {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0 0 4px 0;
-        }
-
-        /* 🛠️ 유연한 텍스트 노출을 위해 고정 크기 제거 및 여백 조율 */
-        .profile-tag {
-            font-size: 12px;
-            color: #8b949e;
-            background: #21262d;
-            padding: 5px 12px;
-            border-radius: 8px;
-            display: inline-block;
-            max-width: 100%;
-            box-sizing: border-box;
-            word-break: break-all;
-            line-height: 1.4;
-        }
-
-        .meta-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-box {
-            background: #0d1117;
-            border: 1px solid #21262d;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .jisu-display {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .gauge-subtext {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 5px;
-        }
-
-        .main-grade-text {
-            font-size: 32px;
-            font-weight: 800;
-            color: #03cf5d;
-            margin: 0 0 25px 0;
-            text-shadow: 0 0 15px rgba(3, 207, 93, 0.3);
-        }
-
-        .circle-chart-wrapper {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px auto;
-        }
-
-        .circle-chart {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(#03cf5d 0%, #21262d 0% 100%); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.5s ease-in-out;
-        }
-
-        .circle-chart-inner {
-            width: 110px;
-            height: 110px;
-            background: #161b22;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .circle-score {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .circle-label {
-            font-size: 11px;
-            color: #8b949e;
-            margin-top: 2px;
-        }
-
-        .analysis-status-badge {
-            font-size: 13px;
-            color: #8b949e;
-            background: #0d1117;
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid #21262d;
-            display: inline-block;
-        }
-
-        .post-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .post-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #0d1117;
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 1px solid #21262d;
-            transition: border-color 0.2s;
-        }
-
-        .post-item:hover {
-            border-color: #30363d;
-        }
-
-        .post-badge {
-            background: #21262d;
-            color: #03cf5d;
-            font-size: 12px;
-            font-weight: 700;
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .post-content {
-            flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 14px;
-        }
-
-        .post-content a {
-            color: #c9d1d9;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .post-content a:hover {
-            color: #03cf5d;
-            text-decoration: underline;
-        }
-
-        .actions-zone {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .back-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #21262d;
-            color: #c9d1d9;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: background 0.2s;
-            border: 1px solid #30363d;
-        }
-
-        .back-btn:hover { background: #30363d; }
-
-        .loader-wrapper {
-            text-align: center;
-            padding: 60px 0;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0d1117; color: #ecf0f1; margin: 0; padding: 30px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .dashboard-container { width: 100%; max-width: 1100px; display: none; }
+        .header-zone { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #21262d; }
+        .header-zone h2 { font-size: 20px; font-weight: 700; margin: 0; color: #ffffff; }
+        .header-zone h2 span { color: #03cf5d; }
+        .timestamp { font-size: 13px; color: #8b949e; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1.1fr 1.2fr; gap: 20px; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .card-title { font-size: 14px; font-weight: 600; color: #8b949e; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+        .profile-zone { text-align: center; padding: 10px 0 20px 0; border-bottom: 1px solid #21262d; margin-bottom: 20px; }
+        .profile-avatar { width: 50px; height: 50px; background: #21262d; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; border: 1px solid #30363d; }
+        .profile-id { font-size: 18px; font-weight: 700; color: #ffffff; margin: 0 0 4px 0; }
+        .profile-tag { font-size: 12px; color: #03cf5d; background: rgba(3, 207, 93, 0.1); border: 1px solid rgba(3, 207, 93, 0.2); padding: 5px 12px; border-radius: 6px; display: inline-block; max-width: 100%; box-sizing: border-box; word-break: break-all; }
+        .meta-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box { background: #0d1117; border: 1px solid #21262d; padding: 12px; border-radius: 8px; }
+        .stat-label { font-size: 12px; color: #8b949e; margin-bottom: 4px; }
+        .stat-value { font-size: 16px; font-weight: 700; color: #ffffff; }
+        .jisu-display { text-align: center; padding: 10px 0; }
+        .gauge-subtext { font-size: 12px; color: #8b949e; margin-bottom: 5px; }
+        .main-grade-text { font-size: 32px; font-weight: 800; color: #03cf5d; margin: 0 0 25px 0; text-shadow: 0 0 15px rgba(3, 207, 93, 0.3); }
+        .circle-chart-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 20px auto; }
+        .circle-chart { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#03cf5d 0%, #21262d 0% 100%); display: flex; align-items: center; justify-content: center; transition: background 0.5s ease-in-out; }
+        .circle-chart-inner { width: 110px; height: 110px; background: #161b22; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .circle-score { font-size: 26px; font-weight: 800; color: #ffffff; }
+        .circle-label { font-size: 11px; color: #8b949e; margin-top: 2px; }
+        .analysis-status-badge { font-size: 13px; color: #8b949e; background: #0d1117; padding: 8px 16px; border-radius: 8px; border: 1px solid #21262d; display: inline-block; }
+        .post-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+        .post-item { display: flex; align-items: center; gap: 12px; background: #0d1117; padding: 14px 16px; border-radius: 10px; border: 1px solid #21262d; }
+        .post-badge { background: #21262d; color: #03cf5d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .post-content { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+        .post-content a { color: #c9d1d9; text-decoration: none; font-weight: 500; }
+        .post-content a:hover { color: #03cf5d; text-decoration: underline; }
+        .actions-zone { margin-top: 30px; text-align: center; }
+        .back-btn { display: inline-block; padding: 12px 24px; background: #21262d; color: #c9d1d9; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; border: 1px solid #30363d; }
+        .loader-wrapper { text-align: center; padding: 60px 0; }
         .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #03cf5d; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -318,7 +64,7 @@
                 <div class="profile-zone">
                     <div class="profile-avatar">📁</div>
                     <p id="displayId" class="profile-id">-</p>
-                    <span id="blogDescription" class="profile-tag">네이버 블로그</span>
+                    <span id="blogCategory" class="profile-tag">일상·생각</span>
                 </div>
                 <div class="meta-stats">
                     <div class="stat-box">
@@ -326,7 +72,7 @@
                         <div class="stat-value" style="color: #03cf5d; font-size: 14px;">네이버 실시간 RSS</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">추적 포스팅 수</div>
+                        <div class="stat-label">당월 활성 포스팅</div>
                         <div id="collectedCount" class="stat-value">0개</div>
                     </div>
                 </div>
@@ -355,8 +101,7 @@
 
             <div class="card">
                 <p class="card-title">🔥 최근 핵심 분석 포스팅</p>
-                <ul id="postContainer" class="post-list">
-                    </ul>
+                <ul id="postContainer" class="post-list"></ul>
             </div>
         </div>
 
@@ -367,11 +112,7 @@
 
     <script>
         const now = new Date();
-        const formattedDate = now.getFullYear() + '-' + 
-            String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-            String(now.getDate()).padStart(2, '0') + ' ' + 
-            String(now.getHours()).padStart(2, '0') + ':' + 
-            String(now.getMinutes()).padStart(2, '0');
+        const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
         document.getElementById('currentTime').innerText = formattedDate;
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -402,16 +143,23 @@
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(textData, "text/xml");
                 
-                // 🛠️ 보완 포인트: 네이버 블로그 고유의 채널 정보(소개글) 추출 장치
                 const channelDoc = xmlDoc.getElementsByTagName("channel")[0];
-                let blogDesc = "네이버 공식 블로그";
+                let blogTitle = "";
+                let blogDesc = "";
                 if (channelDoc) {
-                    const descNode = channelDoc.getElementsByTagName("description")[0];
-                    if (descNode && descNode.textContent.trim().length > 0) {
-                        blogDesc = descNode.textContent.trim();
-                        // 너무 길면 UI상 지저분하므로 앞의 30자만 슬라이스 커팅
-                        if (blogDesc.length > 30) blogDesc = blogDesc.substring(0, 30) + "...";
-                    }
+                    blogTitle = channelDoc.getElementsByTagName("title")[0]?.textContent || "";
+                    blogDesc = channelDoc.getElementsByTagName("description")[0]?.textContent || "";
+                }
+
+                // 🛠️ 스마트 카테고리 매핑 연산 장치
+                let finalCategory = "일상·생각";
+                const checkText = (blogTitle + blogDesc).toLowerCase();
+                if (checkText.match(/(디자인|미술|그림|포트폴리오|인테리어|로고|브랜딩|design)/)) finalCategory = "미술·디자인";
+                else if (checkText.match(/(맛집|카페|요리|레시피|푸드|음식)/)) finalCategory = "요리·맛집";
+                else if (checkText.match(/(IT|컴퓨터|테크|스마트폰|개발|코딩|tech)/)) finalCategory = "IT·컴퓨터";
+                else if (checkText.match(/(비즈니스|마케팅|금융|재테크|주식|경제)/)) finalCategory = "경제·비즈니스";
+                else if (blogTitle.trim().length > 0) {
+                    finalCategory = blogTitle.replace("네이버 블로그", "").substring(0, 12).trim();
                 }
 
                 const items = xmlDoc.getElementsByTagName("item");
@@ -419,20 +167,26 @@
 
                 if (totalPosts === 0) throw new Error("데이터 공백");
 
-                document.getElementById('collectedCount').innerText = `${totalPosts}개`;
-                document.getElementById('blogDescription').innerText = blogDesc; // 실시간 주입
-
                 let postHtml = "";
                 let totalTitleLength = 0;
+                let activeMonthPosts = 0; // 🛠️ 진짜 최근 30일 이내에 작성된 글 개수 계측기
                 let dates = [];
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
                 for (let i = 0; i < Math.min(totalPosts, 5); i++) {
                     const title = items[i].getElementsByTagName("title")[0].textContent;
                     const link = items[i].getElementsByTagName("link")[0].textContent;
-                    const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
+                    const pubDateStr = items[i].getElementsByTagName("pubDate")[0].textContent;
+                    const pDate = new Date(pubDateStr);
                     
                     totalTitleLength += title.length;
-                    dates.push(new Date(pubDate));
+                    dates.push(pDate);
+
+                    // 포스팅 날짜가 진짜 최근 30일 이내인지 대조 검사
+                    if (pDate >= thirtyDaysAgo) {
+                        activeMonthPosts++;
+                    }
 
                     postHtml += `
                         <li class="post-item">
@@ -441,81 +195,62 @@
                         </li>`;
                 }
 
+                document.getElementById('collectedCount').innerText = `${activeMonthPosts}개`;
+                document.getElementById('blogCategory').innerText = finalCategory;
+
+                // 📊 [더 엄격해진 지표 연산 구역]
                 let score = 0;
-                let isDormant = false;
 
-                if (dates.length >= 1) {
-                    const today = new Date();
-                    const latestPostDate = dates[0];
-                    const daysSinceLatestPost = Math.abs(today - latestPostDate) / (1000 * 60 * 60 * 24);
-                    if (daysSinceLatestPost > 60) isDormant = true;
-                }
+                // 1지표: 당월 활성 포스팅 볼륨 점수 (최대 40점 ➔ 과거 글 쳐내기 완료)
+                if (activeMonthPosts >= 8) score += 40;     // 한 달에 8개 이상 정성글 업로드
+                else if (activeMonthPosts >= 4) score += 25; // 주 1회 수준 운영
+                else if (activeMonthPosts >= 1) score += 10; // 🛠️ hoja1처럼 겨우 1~2개 얹은 계정은 10점 레이크로 폭락
+                else score += 5;
 
-                if (isDormant) {
-                    score = 22; 
+                // 2지표: 콘텐츠 밀도 점수 (최대 30점)
+                const avgTitleLength = totalTitleLength / Math.min(totalPosts, 5);
+                if (avgTitleLength >= 40) score += 30; 
+                else if (avgTitleLength >= 23) score += 20;
+                else score += 10;
+
+                // 3지표: 발행 성실도 주기 점수 (최대 30점)
+                if (dates.length >= 2 && activeMonthPosts >= 2) {
+                    const timeDiff = Math.abs(dates[0] - dates[1]) / (1000 * 60 * 60 * 24);
+                    if (timeDiff <= 3) score += 30; 
+                    else if (timeDiff <= 7) score += 20;
+                    else score += 10;
                 } else {
-                    if (totalPosts >= 19) score += 40;
-                    else if (totalPosts >= 14) score += 30;
-                    else if (totalPosts >= 7) score += 20;
-                    else score += 10;
-
-                    const avgTitleLength = totalTitleLength / Math.min(totalPosts, 5);
-                    if (avgTitleLength >= 40) score += 30; 
-                    else if (avgTitleLength >= 23) score += 20;
-                    else score += 10;
-
-                    if (dates.length >= 2) {
-                        const timeDiff = Math.abs(dates[0] - dates[1]) / (1000 * 60 * 60 * 24);
-                        if (timeDiff <= 2) score += 30; 
-                        else if (timeDiff <= 6) score += 20;
-                        else score += 10;
-                    } else {
-                        score += 10;
-                    }
+                    score += 5; // 한 달간 쓴 글이 없거나 부족하면 주기 점수도 패널티 떡락
                 }
 
+                // 🏆 등급 판정
                 let grade = "일반 블로그";
-                let statusColor = "#03cf5d";
-                let statusText = "정상";
-
-                if (isDormant) {
-                    grade = "장기 휴면 계정";
-                    statusColor = "#8b949e";
-                    statusText = "비활성";
-                } else {
-                    if (score >= 90) grade = "최적화";
-                    else if (score >= 70) grade = "준최 최상위";
-                    else if (score >= 45) grade = "준최 등급";
-                    else grade = "일반 블로그";
-                }
+                if (score >= 85) grade = "최적화";
+                else if (score >= 60) grade = "준최 최상위";
+                else if (score >= 35) grade = "준최 등급";
+                else grade = "일반 블로그";
 
                 document.getElementById('circleScore').innerText = `${score}점`;
                 document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${score}%, #21262d ${score}% 100%)`;
                 document.getElementById('postContainer').innerHTML = postHtml;
                 document.getElementById('blogGrade').innerText = grade;
-                document.getElementById('statusText').innerText = statusText;
-                document.getElementById('statusText').style.color = statusColor;
+                document.getElementById('statusText').innerText = "정상";
+                document.getElementById('statusText').style.color = "#03cf5d";
                 
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
-                console.log("3초 타임아웃 강제 탈출 작동");
-                clearTimeout(timeoutId);
-                
-                const fallbackScore = 58; 
-                document.getElementById('collectedCount').innerText = "데이터 지연";
-                document.getElementById('blogDescription').innerText = "네이버 서비스 연동";
+                const fallbackScore = 55; 
+                document.getElementById('collectedCount').innerText = "지연";
+                document.getElementById('blogCategory').innerText = "네이버 연동";
                 document.getElementById('circleScore').innerText = `${fallbackScore}점`;
                 document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${fallbackScore}%, #21262d ${fallbackScore}% 100%)`;
                 document.getElementById('blogGrade').innerText = "분석 일반";
                 document.getElementById('statusText').innerText = "지연 (실시간 우회)";
                 document.getElementById('statusText').style.color = "#8b949e";
-                
                 document.getElementById('postContainer').innerHTML = `
-                    <li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">네이버 블로그 홈 링크 바로가기</a></div></li>
-                    <li class="post-item"><div class="post-badge">i</div><div class="post-content" style="color:#8b949e;">우회망 정체 중 (잠시 후 다시 시도)</div></li>`;
-
+                    <li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">네이버 블로그 홈 링크 바로가기</a></div></li>`;
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('dashboard').style.display = "block";
             }
