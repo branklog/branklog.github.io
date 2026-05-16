@@ -37,31 +37,25 @@
         
         <div id="resultContent" class="blog-info">
             <h2>지수 분석 결과</h2>
-            
             <div class="info-row">
                 <span class="info-label">블로그 ID</span>
                 <span id="displayId" class="info-value">-</span>
             </div>
-            
             <div class="grade-box">
                 <p class="grade-title">종합 분석 지수</p>
                 <p id="blogGrade" class="grade-value">분석 중</p>
             </div>
-
             <div class="info-row" style="background: transparent; padding: 0 5px; margin-bottom: 20px;">
                 <span class="info-label">데이터 분석 상태</span>
                 <span id="postStatus" class="info-value" style="color: #03cf5d;">추정치</span>
             </div>
-            
             <div class="section-title">최근 발행 포스팅 리스트</div>
             <ul id="postContainer" class="post-list"></ul>
         </div>
-
         <a href="index.html" class="back-btn">← 다른 아이디 조회하기</a>
     </div>
 
     <script>
-        // 🛠️ 정확히 고정하고 싶은 내 네이버 아이디와 실제 지수를 등록하는 곳
         const exactDatabase = {
             "226_3333": "최적화 2단계", 
             "테스트아이디": "준최적화 5단계"
@@ -78,8 +72,9 @@
         }
 
         async function fetchBlogRealData(id) {
-            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-            const targetUrl = `https://rss.blog.naver.com/${id}.xml`;
+            // 🛠️ 주황색 버튼 승인이 필요 없는 새로운 대체 프록시 서버 적용!
+            const proxyUrl = "https://api.allorigins.win/raw?url=";
+            const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
 
             try {
                 const response = await fetch(proxyUrl + targetUrl);
@@ -91,7 +86,7 @@
                 const items = xmlDoc.getElementsByTagName("item");
 
                 if (items.length === 0) {
-                    document.getElementById('loader').innerHTML = "<span class='error-msg'>존재하지 않는 아이디이거나 최근에 작성한 글이 없는 블로그입니다.</span>";
+                    document.getElementById('loader').innerHTML = "<span class='error-msg'>존재하지 않는 아이디이거나 글이 없는 블로그입니다.</span>";
                     return;
                 }
 
@@ -102,7 +97,6 @@
                     postHtml += `<li class="post-item"><a href="${link}" target="_blank">📄 ${title}</a></li>`;
                 }
 
-                // 정확도 매핑 로직 작동
                 let grade = "일반";
                 let statusText = "추정치";
                 const lowerId = id.toLowerCase();
@@ -127,8 +121,13 @@
                 document.getElementById('blogGrade').innerText = grade;
                 document.getElementById('postStatus').innerText = statusText;
                 
-                // 🛠️ [버그 수정 완료] 단 한 글자의 오타도 없이 깨끗하게 처리했습니다.
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('resultContent').style.display = "block";
 
-            } catch
+            } catch (error) {
+                document.getElementById('loader').innerHTML = "<span class='error-msg'>네이버 데이터 수집 중 일시적인 통신 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</span>";
+            }
+        }
+    </script>
+</body>
+</html>
