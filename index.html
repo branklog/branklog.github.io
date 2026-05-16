@@ -158,9 +158,8 @@
     </div>
 
     <script>
-        // 🟢 [완벽 복구] 블로그 분석 데이터 배달 및 주소창 이동 함수
-        // 버튼의 'startAnalysis('blog')' 구성을 직관적인 독립 구동 방식으로 깔끔하게 교통정리했습니다.
-         Kakao = function startAnalysis() {
+        // 🟢 블로그 분석 페이지 이동 함수
+        function startAnalysis() {
             const val = document.getElementById('blogId').value.trim();
             if (!val) {
                 alert('분석할 블로그 아이디를 입력해 주세요.');
@@ -169,7 +168,7 @@
             window.location.href = `result.html?blogId=${encodeURIComponent(val)}`;
         }
 
-        // 🔵 [완벽 복구] 플레이스 분석 데이터 배달 및 주소창 이동 함수
+        // 🔵 플레이스 분석 페이지 이동 함수
         function startPlaceAnalysis() {
             const val = document.getElementById('placeNameInput').value.trim();
             if (!val) {
