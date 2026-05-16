@@ -20,8 +20,8 @@
             max-width: 500px;
             padding: 20px;
             text-align: center;
+            box-sizing: border-box;
         }
-        /* 🌟 결과창과 완벽하게 아이덴티티를 통일한 로고 마당 디테일 */
         .brand-logo-area {
             display: flex;
             align-items: center;
@@ -80,20 +80,25 @@
             color: #ffffff;
             padding: 10px 12px;
             font-size: 15px;
+            width: 100%;
         }
         .search-box input::placeholder {
             color: #484f58;
         }
+        
+        /* 🌟 모바일 글자 깨짐 방지 튜닝 완료된 버튼 스타일 */
         .btn-naver {
             background: #03cf5d;
             color: #ffffff;
             border: none;
-            padding: 10px 24px;
+            padding: 10px 16px; /* ❶ 좌우 여백을 미세하게 압축 */
             border-radius: 8px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: opacity 0.2s;
+            white-space: nowrap; /* ❷ 어떤 좁은 화면에서도 절대 줄바꿈 되지 않도록 강제 고정 */
+            flex-shrink: 0; /* ❸ 버튼 자체가 찌그러지지 않도록 방어 */
         }
         .btn-naver:hover {
             opacity: 0.9;
@@ -102,6 +107,7 @@
             font-size: 11px;
             color: #6e7681;
             line-height: 1.6;
+            word-break: keep-all;
         }
     </style>
 </head>
@@ -134,7 +140,6 @@
         function startAnalysis() {
             const id = document.getElementById('blogId').value.trim();
             if (!id) return alert('네이버 블로그 아이디를 입력해주세요.');
-            // 올려주신 오리지널 고속 분석 수식창(result.html)으로 정확하게 이름표 토스
             location.href = `result.html?blogId=${encodeURIComponent(id)}`;
         }
     </script>
