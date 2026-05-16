@@ -18,354 +18,57 @@
             box-sizing: border-box;
         }
 
-        .dashboard-container {
-            width: 100%;
-            max-width: 1100px; 
-            display: none; 
-        }
+        .dashboard-container { width: 100%; max-width: 1100px; display: none; }
+        .header-zone { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #21262d; }
+        .brand-logo-area { display: flex; align-items: center; gap: 10px; }
+        .brand-logo-area img { height: 28px; width: auto; display: block; }
+        .brand-text { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; text-transform: uppercase; }
+        .header-meta-line { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px; }
+        .header-meta-line h2 { font-size: 16px; font-weight: 600; margin: 0; color: #c9d1d9; }
+        .header-meta-line h2 span { color: #03cf5d; font-weight: 700; }
+        .timestamp { font-size: 13px; color: #8b949e; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1.1fr 1.2fr; gap: 20px; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
 
-        .header-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #21262d;
-        }
+        .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        .card-title { font-size: 14px; font-weight: 600; color: #8b949e; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+        .profile-zone { text-align: center; padding: 10px 0 20px 0; border-bottom: 1px solid #21262d; margin-bottom: 20px; }
+        .profile-avatar { width: 50px; height: 50px; background: #21262d; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; border: 1px solid #30363d; }
+        .profile-id { font-size: 18px; font-weight: 700; color: #ffffff; margin: 0 0 8px 0; }
+        .profile-tag { font-size: 12px; color: #03cf5d; background: rgba(3, 207, 93, 0.08); border: 1px solid rgba(3, 207, 93, 0.2); padding: 6px 14px; border-radius: 6px; display: inline-block; max-width: 100%; box-sizing: border-box; word-break: break-all; line-height: 1.4; font-weight: 500; }
 
-        .brand-logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .meta-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
+        .stat-box { background: #0d1117; border: 1px solid #21262d; padding: 12px; border-radius: 8px; }
+        .stat-label { font-size: 12px; color: #8b949e; margin-bottom: 4px; }
+        .stat-value { font-size: 16px; font-weight: 700; color: #ffffff; }
 
-        .brand-logo-area img {
-            height: 28px;
-            width: auto;
-            display: block;
-        }
+        .jisu-display { text-align: center; padding: 5px 0; }
+        .gauge-subtext { font-size: 12px; color: #8b949e; margin-bottom: 5px; }
+        .main-grade-text { font-size: 32px; font-weight: 800; color: #03cf5d; margin: 0 0 20px 0; text-shadow: 0 0 15px rgba(3, 207, 93, 0.25); }
+        .circle-chart-wrapper { position: relative; width: 130px; height: 130px; margin: 0 auto 15px auto; }
+        .circle-chart { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#03cf5d 0%, #21262d 0% 100%); display: flex; align-items: center; justify-content: center; transition: background 0.5s ease-in-out; }
+        .circle-chart-inner { width: 102px; height: 102px; background: #161b22; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .circle-score { font-size: 24px; font-weight: 800; color: #ffffff; }
+        .circle-label { font-size: 11px; color: #8b949e; margin-top: 1px; }
+        .analysis-status-badge { font-size: 12px; color: #8b949e; background: #0d1117; padding: 6px 14px; border-radius: 8px; border: 1px solid #21262d; display: inline-block; margin-bottom: 20px; }
 
-        .brand-text {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
+        .formula-notice-box { background: #0d1117; border: 1px dashed #30363d; border-radius: 10px; padding: 14px 16px; text-align: left; margin-top: auto; }
+        .formula-title { font-size: 11px; font-weight: 700; color: #8b949e; text-transform: uppercase; margin: 0 0 6px 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; }
+        .formula-text { font-size: 11px; color: #6e7681; line-height: 1.5; margin: 0; word-break: keep-all; }
 
-        .header-meta-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-top: 5px;
-        }
+        .post-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+        .post-item { display: flex; align-items: center; gap: 12px; background: #0d1117; padding: 14px 16px; border-radius: 10px; border: 1px solid #21262d; }
+        .post-badge { background: #21262d; color: #03cf5d; font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .post-content { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+        .post-content a { color: #c9d1d9; text-decoration: none; font-weight: 500; }
+        .post-content a:hover { color: #03cf5d; text-decoration: underline; }
 
-        .header-meta-line h2 {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0;
-            color: #c9d1d9;
-        }
+        .actions-zone { margin-top: 30px; text-align: center; }
+        .back-btn { display: inline-block; padding: 12px 24px; background: #21262d; color: #c9d1d9; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; border: 1px solid #30363d; transition: background 0.2s; }
+        .back-btn:hover { background: #30363d; }
 
-        .header-meta-line h2 span {
-            color: #03cf5d; 
-            font-weight: 700;
-        }
-
-        .timestamp {
-            font-size: 13px;
-            color: #8b949e;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr 1.2fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .grid-layout { grid-template-columns: 1fr; }
-        }
-
-        .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #8b949e;
-            margin-top: 0;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .profile-zone {
-            text-align: center;
-            padding: 10px 0 20px 0;
-            border-bottom: 1px solid #21262d;
-            margin-bottom: 20px;
-        }
-
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
-            background: #21262d;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-bottom: 10px;
-            border: 1px solid #30363d;
-        }
-
-        .profile-id {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0 0 8px 0;
-        }
-
-        .profile-tag {
-            font-size: 12px;
-            color: #03cf5d; 
-            background: rgba(3, 207, 93, 0.08);
-            border: 1px solid rgba(3, 207, 93, 0.2);
-            padding: 6px 14px;
-            border-radius: 6px;
-            display: inline-block;
-            max-width: 100%;
-            box-sizing: border-box;
-            word-break: break-all;
-            line-height: 1.4;
-            font-weight: 500;
-        }
-
-        .meta-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: auto;
-        }
-
-        .stat-box {
-            background: #0d1117;
-            border: 1px solid #21262d;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .jisu-display {
-            text-align: center;
-            padding: 5px 0;
-        }
-
-        .gauge-subtext {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 5px;
-        }
-
-        .main-grade-text {
-            font-size: 32px;
-            font-weight: 800;
-            color: #03cf5d; 
-            margin: 0 0 20px 0;
-            text-shadow: 0 0 15px rgba(3, 207, 93, 0.25);
-        }
-
-        .circle-chart-wrapper {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 15px auto;
-        }
-
-        .circle-chart {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(#03cf5d 0%, #21262d 0% 100%); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.5s ease-in-out;
-        }
-
-        .circle-chart-inner {
-            width: 102px;
-            height: 102px;
-            background: #161b22;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .circle-score {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .circle-label {
-            font-size: 11px;
-            color: #8b949e;
-            margin-top: 1px;
-        }
-
-        .analysis-status-badge {
-            font-size: 12px;
-            color: #8b949e;
-            background: #0d1117;
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: 1px solid #21262d;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .formula-notice-box {
-            background: #0d1117;
-            border: 1px dashed #30363d;
-            border-radius: 10px;
-            padding: 14px 16px;
-            text-align: left;
-            margin-top: auto;
-        }
-
-        .formula-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #8b949e;
-            text-transform: uppercase;
-            margin: 0 0 6px 0;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .formula-text {
-            font-size: 11px;
-            color: #6e7681;
-            line-height: 1.5;
-            margin: 0;
-            word-break: keep-all;
-        }
-
-        .post-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .post-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #0d1117;
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 1px solid #21262d;
-        }
-
-        .post-badge {
-            background: #21262d;
-            color: #03cf5d; 
-            font-size: 12px;
-            font-weight: 700;
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .post-content {
-            flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 14px;
-        }
-
-        .post-content a {
-            color: #c9d1d9;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .post-content a:hover {
-            color: #03cf5d; 
-            text-decoration: underline;
-        }
-
-        .actions-zone {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .back-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #21262d;
-            color: #c9d1d9;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            border: 1px solid #30363d;
-            transition: background 0.2s;
-        }
-
-        .back-btn:hover {
-            background: #30363d;
-        }
-
-        .loader-wrapper {
-            text-align: center;
-            padding: 60px 0;
-        }
-        
-        .spinner { 
-            border: 4px solid rgba(255,255,255,0.1); 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            border-left-color: #03cf5d; 
-            animation: spin 1s linear infinite; 
-            margin: 0 auto 20px auto; 
-        }
+        .loader-wrapper { text-align: center; padding: 60px 0; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #03cf5d; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -454,7 +157,6 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const rawBlogId = urlParams.get('blogId');
-
         const blogId = rawBlogId ? decodeURIComponent(rawBlogId) : null;
 
         if (!blogId) {
@@ -466,11 +168,12 @@
         }
 
         async function fetchBlogRealData(id) {
-            const proxyUrl = "https://api.allorigins.win/raw?url=";
+            // [교정 핵심] 주말 과부하 걸린 old 프록시를 버리고, 리얼 타임 신형 고속 프록시로 통로 개척!
+            const proxyUrl = "https://corsproxy.io/?";
             const targetUrl = encodeURIComponent(`https://rss.blog.naver.com/${id}.xml`);
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); 
+            const timeoutId = setTimeout(() => controller.abort(), 4000); 
 
             try {
                 const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
@@ -527,6 +230,7 @@
                 document.getElementById('collectedCount').innerText = `${activeMonthPosts}개`;
                 document.getElementById('blogGreeting').innerText = realGreeting; 
 
+                // ❶ 오전 내내 다듬은 '리얼 실시간 연산 공식' 작동 시작!
                 let score = 0;
 
                 if (activeMonthPosts >= 6) score += 40;     
@@ -565,16 +269,17 @@
                 document.getElementById('dashboard').style.display = "block";
 
             } catch (error) {
+                // ❷ 데이터 통로 자체가 지연될 때만 마지못해 보여주는 '진짜 예외 안전장치' (55점 일반 복구)
                 const fallbackScore = 55; 
                 document.getElementById('collectedCount').innerText = "지연";
                 document.getElementById('blogGreeting').innerText = "네이버 블로그";
                 document.getElementById('circleScore').innerText = `${fallbackScore}점`;
                 document.getElementById('circleChart').style.background = `conic-gradient(#03cf5d ${fallbackScore}%, #21262d ${fallbackScore}% 100%)`;
                 document.getElementById('blogGrade').innerText = "분석 일반";
-                document.getElementById('statusText').innerText = "지연 (실시간 우회)";
+                document.getElementById('statusText').innerText = "데이터 통로 정체";
                 document.getElementById('statusText').style.color = "#8b949e";
                 document.getElementById('postContainer').innerHTML = `
-                    <li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">네이버 블로그 홈 링크 바로가기</a></div></li>`;
+                    <li class="post-item"><div class="post-badge">!</div><div class="post-content"><a href="https://blog.naver.com/${id}" target="_blank">실시간 파싱 지연 (여기를 눌러 블로그 홈 확인)</a></div></li>`;
                 document.getElementById('loader').style.display = "none";
                 document.getElementById('dashboard').style.display = "block";
             }
