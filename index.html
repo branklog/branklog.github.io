@@ -142,7 +142,7 @@
         </div>
         <p class="main-sub">네이버 블로그 실시간 빅데이터 지수 분석 플랫폼</p>
 
-        <div class="search-section">
+      <div class="search-section">
             <div class="input-group">
                 <span class="input-label">블로그 지수 분석 (Naver)</span>
                 <div class="search-box">
@@ -150,6 +150,15 @@
                     <button class="btn-common btn-naver" onclick="startAnalysis('blog')">분석하기</button>
                 </div>
             </div>
+
+            <div class="input-group" style="margin-top: 25px;">
+                <span class="input-label" style="color: #388bfd;">플레이스 지수 분석 (Place)</span>
+                <div class="search-box">
+                    <input type="text" id="placeNameInput" placeholder="매장 상호명을 입력해주세요 (예: 디자인다움)" onkeypress="if(event.keyCode==13) startPlaceAnalysis()">
+                    <button class="btn-common btn-naver" style="background-color: #388bfd; border-color: #388bfd; color: #ffffff;" onclick="startPlaceAnalysis()">분석하기</button>
+                </div>
+            </div>
+        </div>
 
       
         <p class="footer-notice">
