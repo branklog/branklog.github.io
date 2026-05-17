@@ -24,22 +24,24 @@
             box-sizing: border-box;
         }
         
-        /* 🌟 [디자인 교정] 로고와 텍스트 위아래 2단 배치 */
+        /* 🌟 [디자인 교정] 로고와 텍스트를 위아래 2단 배치로 크게 확장 */
         .brand-logo-area {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column; /* 세로 배열로 변경하여 크기 극대화 */
             align-items: center;
             justify-content: center;
             gap: 15px;
             margin-bottom: 12px;
         }
+        /* 로고 마크 크기를 시원시원하게 스케일업 */
         .brand-logo-area img {
-            height: 56px; 
+            height: 56px; /* 기존 32px에서 대폭 확장 */
             width: auto;
             display: block;
         }
+        /* 타이틀 서체 크기를 굵고 웅장하게 키우기 */
         .brand-text {
-            font-size: 38px; 
+            font-size: 38px; /* 기존 26px에서 대폭 확장 */
             font-weight: 800;
             letter-spacing: -1px;
             color: #ffffff;
@@ -74,29 +76,30 @@
             display: block;
         }
         
-        /* 🌟 [디자인 교정] 인풋 입력창 흰색 배경 바탕 */
+        /* 🌟 [디자인 교정] 인풋 입력창 구역을 흰색(White) 배경으로 완전 반전 */
         .search-box {
             display: flex;
-            background: #ffffff; 
+            background: #ffffff; /* 완전히 투명하고 정갈한 흰색 바탕 */
             border: 1px solid #ffffff;
             border-radius: 10px;
             padding: 6px;
             align-items: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        /* 흰색 배경에 맞춰 입력 텍스트와 플레이스홀더 컬러 최적화 */
         .search-box input {
             flex-grow: 1;
             background: transparent;
             border: none;
             outline: none;
-            color: #0d1117; 
+            color: #0d1117; /* 글자색을 어두운 톤으로 변경하여 가독성 확보 */
             padding: 10px 12px;
             font-size: 15px;
             width: 100%;
             font-weight: 500;
         }
         .search-box input::placeholder {
-            color: #8b949e; 
+            color: #8b949e; /* 흰색 바탕에서 잘 보이는 차분한 회색 플레이스홀더 */
         }
         
         /* 버튼 스타일 지정 */
@@ -113,9 +116,15 @@
             flex-shrink: 0;
         }
         .btn-naver { background: #03cf5d; }
-        .btn-place { background: #388bfd; }
+        .btn-keyword { background: #388bfd; }
         .btn-common:hover { opacity: 0.9; }
         
+        .divider {
+            height: 1px;
+            background: #30363d;
+            border: none;
+            margin: 5px 0;
+        }
         .footer-notice {
             font-size: 11px;
             color: #6e7681;
@@ -137,20 +146,12 @@
             <div class="input-group">
                 <span class="input-label">블로그 지수 분석 (Naver)</span>
                 <div class="search-box">
-                    <input type="text" id="blogId" placeholder="네이버 블로그 ID를 입력해주세요" onkeypress="if(event.keyCode==13) startAnalysis()">
-                    <button class="btn-common btn-naver" onclick="startAnalysis()">분석하기</button>
+                    <input type="text" id="blogId" placeholder="네이버 블로그 ID를 입력해주세요" onkeypress="if(event.keyCode==13) startAnalysis('blog')">
+                    <button class="btn-common btn-naver" onclick="startAnalysis('blog')">분석하기</button>
                 </div>
             </div>
 
-            <div class="input-group" style="margin-top: 25px;">
-                <span class="input-label">플레이스 지수 분석 (Place)</span>
-                <div class="search-box">
-                    <input type="text" id="placeNameInput" placeholder="매장 상호명을 입력해주세요 (예: 디자인다움)" onkeypress="if(event.keyCode==13) startPlaceAnalysis()">
-                    <button class="btn-common btn-place" onclick="startPlaceAnalysis()">분석하기</button>
-                </div>
-            </div>
-        </div>
-
+      
         <p class="footer-notice">
             아이디 입력 시 해당 블로그의 최근 30일 활성 데이터 스코어 및<br>
             종합 노출 가중치 리포트를 실시간으로 파싱하여 제공합니다.
@@ -158,26 +159,17 @@
     </div>
 
     <script>
-        // 🟢 블로그 분석 페이지 이동 함수
-        function startAnalysis() {
-            const val = document.getElementById('blogId').value.trim();
-            if (!val) {
-                alert('분석할 블로그 아이디를 입력해 주세요.');
-                return;
+        function startAnalysis(type) {
+            if (type === 'blog') {
+                const id = document.getElementById('blogId').value.trim();
+                if (!id) return alert('네이버 블로그 아이디를 입력해주세요.');
+                location.href = `result.html?blogId=${encodeURIComponent(id)}`;
+            } else {
+                const keyword = document.getElementById('keywordId').value.trim();
+                if (!keyword) return alert('분석할 키워드를 입력해주세요.');
+                location.href = `result.html?keywordOnly=${encodeURIComponent(keyword)}`;
             }
-            window.location.href = `result.html?blogId=${encodeURIComponent(val)}`;
-        }
-
-        // 🔵 플레이스 분석 페이지 이동 함수
-        function startPlaceAnalysis() {
-            const val = document.getElementById('placeNameInput').value.trim();
-            if (!val) {
-                alert('검색할 매장 상호명을 입력해 주세요.');
-                return;
-            }
-            window.location.href = `result.html?placeQuery=${encodeURIComponent(val)}`;
         }
     </script>
-  
 </body>
 </html>
