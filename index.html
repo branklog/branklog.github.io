@@ -30,19 +30,18 @@
             flex-direction: column; /* 세로 배열로 변경하여 크기 극대화 */
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 4px;
+            gap: 15px;
+            margin-bottom: 12px;
         }
         /* 로고 마크 크기를 시원시원하게 스케일업 */
         .brand-logo-area img {
-            height: 72px; /* 기존 32px에서 대폭 확장 */
+            height: 56px; /* 기존 32px에서 대폭 확장 */
             width: auto;
             display: block;
         }
         /* 타이틀 서체 크기를 굵고 웅장하게 키우기 */
         .brand-text {
-            font-size: 56px;
-            line-height: 1; /* 기존 26px에서 대폭 확장 */
+            font-size: 38px; /* 기존 26px에서 대폭 확장 */
             font-weight: 800;
             letter-spacing: -1px;
             color: #ffffff;
@@ -51,8 +50,7 @@
         .main-sub {
             font-size: 15px;
             color: #8b949e;
-            margin-bottom: 28px;
-            font-size: 16px;
+            margin-bottom: 40px;
         }
         
         /* 검색 섹션 레이아웃 */
@@ -60,12 +58,12 @@
             background-color: #161b22;
             border: 1px solid #30363d;
             border-radius: 16px;
-            padding: 24px 22px;
+            padding: 30px 24px;
             box-shadow: 0 12px 32px rgba(0,0,0,0.4);
             margin-bottom: 25px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 25px;
         }
         .input-group {
             text-align: left;
@@ -74,7 +72,7 @@
             font-size: 13px;
             font-weight: 600;
             color: #8b949e; 
-            margin-bottom: 4px;
+            margin-bottom: 12px;
             display: block;
         }
         
@@ -133,7 +131,64 @@
             line-height: 1.6;
             word-break: keep-all;
         }
-    </style>
+    
+.extra-tools-zone{
+margin-top:16px;
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.extra-tool-btn{
+background:#161b22;
+color:#fff;
+border:1px solid #30363d;
+padding:11px 18px;
+border-radius:10px;
+cursor:pointer;
+font-size:13px;
+font-weight:700;
+}
+
+.visit-counter{
+margin-top:10px;
+color:#8b949e;
+font-size:12px;
+}
+
+.ad-banner{
+margin-top:16px;
+background:#161b22;
+border:1px solid #30363d;
+border-radius:14px;
+padding:12px;
+font-size:13px;
+text-align:center;
+color:#8b949e;
+line-height:1.7;
+}
+
+.contact-btn{
+display:inline-block;
+margin-top:10px;
+padding:10px 18px;
+background:#FEE500;
+color:#111;
+font-weight:700;
+border-radius:8px;
+text-decoration:none;
+font-size:14px;
+}
+</style>
+
+<link rel="icon" type="image/png" sizes="512x512" href="branklogo512.png">
+<link rel="apple-touch-icon" href="branklogo512.png">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="BrankLog">
+<meta name="apple-mobile-web-app-title" content="BrankLog">
 </head>
 <body>
 
@@ -158,9 +213,97 @@
             아이디 입력 시 해당 블로그의 최근 30일 활성 데이터 스코어 및<br>
             종합 노출 가중치 리포트를 실시간으로 파싱하여 제공합니다.
         </p>
-    </div>
+    
+<div class="extra-tools-zone">
+<button class="extra-tool-btn" onclick="toggleTheme()">🌙 다크모드</button>
+<button class="extra-tool-btn" onclick="shareSite()">📤 공유하기</button>
+</div>
 
-    <script>
+<div class="visit-counter">
+👀 누적 방문 수 : <span id="visitCount">0</span>
+</div>
+
+<div class="ad-banner">
+📢 광고 및 제휴 문의<br>
+블로그 분석 · 디자인 · 마케팅 협업 가능<br>
+
+<a class="contact-btn"
+href="https://open.kakao.com/o/sAK0pH6f"
+target="_blank">
+💬 카카오 문의하기
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+let visitCount = localStorage.getItem('branklog_visit') || 0;
+visitCount++;
+
+localStorage.setItem('branklog_visit', visitCount);
+
+const visitEl = document.getElementById('visitCount');
+
+if(visitEl){
+visitEl.innerText = Number(visitCount).toLocaleString();
+}
+
+function shareSite(){
+
+if(navigator.share){
+
+navigator.share({
+title:'BrankLog',
+text:'네이버 블로그 지수 분석 플랫폼',
+url:location.href
+});
+
+}else{
+
+navigator.clipboard.writeText(location.href);
+
+alert('사이트 주소가 복사되었습니다.');
+
+}
+
+}
+
+function toggleTheme(){
+
+const body = document.body;
+const brandText = document.querySelectorAll('.brand-text');
+
+if(body.classList.contains('light-mode')){
+
+body.classList.remove('light-mode');
+
+body.style.backgroundColor = '#0d1117';
+body.style.color = '#ecf0f1';
+
+brandText.forEach(el=>{
+el.style.color = '#ffffff';
+});
+
+}else{
+
+body.classList.add('light-mode');
+
+body.style.backgroundColor = 'white';
+body.style.color = '#111';
+
+brandText.forEach(el=>{
+el.style.color = '#111';
+});
+
+}
+
+}
+
+</script>
+
+<script>
         function startAnalysis(type) {
             if (type === 'blog') {
                 const id = document.getElementById('blogId').value.trim();
