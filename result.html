@@ -108,7 +108,28 @@
         .loader-wrapper { text-align: center; padding: 60px 0; }
         .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #03cf5d; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    
+.top-action-tools{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:nowrap;
+overflow-x:auto;
+}
+
+.tool-btn{
+background:#161b22;
+color:#fff;
+border:1px solid #30363d;
+border-radius:10px;
+padding:11px 16px;
+cursor:pointer;
+font-size:13px;
+font-weight:700;
+white-space:nowrap;
+}
+
+</style>
 </head>
 <body>
 
@@ -129,7 +150,28 @@
             </div>
         </div>
 
-        <div class="grid-layout">
+        
+<div class="top-action-tools">
+
+<button class="tool-btn" onclick="savePDF()">
+📄 결과 저장
+</button>
+
+<button class="tool-btn" onclick="shareResult()">
+📤 공유
+</button>
+
+<button class="tool-btn" onclick="toggleDarkMode()">
+🌙 다크모드
+</button>
+
+<button class="tool-btn" onclick="openPlaceSearch()">
+📍 플레이스 이동
+</button>
+
+</div>
+
+<div class="grid-layout">
             <div class="card">
                 <p class="card-title" id="infoTitle">ℹ️ 블로그 정보</p>
                 <div class="profile-zone">
@@ -454,5 +496,68 @@
             }
         }
     </script>
+
+<script>
+
+function savePDF(){
+window.print();
+}
+
+function shareResult(){
+
+if(navigator.share){
+
+navigator.share({
+title:'BrankLog 분석 결과',
+text:'내 블로그 지수 분석 결과',
+url:location.href
+});
+
+}else{
+
+navigator.clipboard.writeText(location.href);
+
+alert('결과 링크가 복사되었습니다.');
+
+}
+
+}
+
+function toggleDarkMode(){
+
+const body = document.body;
+
+if(body.classList.contains('light-mode')){
+
+body.classList.remove('light-mode');
+
+body.style.backgroundColor = '#0d1117';
+body.style.color = '#ecf0f1';
+
+}else{
+
+body.classList.add('light-mode');
+
+body.style.backgroundColor = 'white';
+body.style.color = '#111';
+
+}
+
+}
+
+function openPlaceSearch(){
+
+const title =
+document.querySelector('.blog-title')?.innerText || '';
+
+window.open(
+`https://map.naver.com/v5/search/${encodeURIComponent(title)}`,
+'_blank'
+);
+
+}
+
+</script>
+
 </body>
 </html>
