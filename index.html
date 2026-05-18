@@ -131,149 +131,42 @@
             line-height: 1.6;
             word-break: keep-all;
         }
-    
-@media(max-width:768px){
-
-.brand-text{
-font-size:50px !important;
-}
-
-.brand-logo-area img{
-height:66px !important;
-}
-
-}
-
-</style>
+    </style>
 </head>
 <body>
 
-<div class="main-container">
+    <div class="main-container">
+        <div class="brand-logo-area">
+            <img src="logo.svg" alt="BrankLog Logo">
+            <span class="brand-text">Brank<span style="color: #03cf5d;">Log.</span></span>
+        </div>
+        <p class="main-sub">네이버 블로그 실시간 빅데이터 지수 분석 플랫폼</p>
 
-    <div class="brand-logo-area">
-        <img src="logo.svg" alt="BrankLog Logo">
-
-        <span class="brand-text">
-            Brank<span style="color: #03cf5d;">Log.</span>
-        </span>
-    </div>
-
-    <p class="main-sub">
-        네이버 블로그 실시간 빅데이터 지수 분석 플랫폼
-    </p>
-
-    <div class="search-section">
-
-        <div class="input-group">
-
-            <span class="input-label">
-                블로그 지수 분석 (Naver)
-            </span>
-
-            <div class="search-box">
-
-                <input
-                type="text"
-                id="blogId"
-                placeholder="네이버 블로그 ID를 입력해주세요"
-                onkeypress="if(event.keyCode==13) startAnalysis()">
-
-                <div id="caps-warning" style="
-                display:none;
-                margin-top:8px;
-                font-size:13px;
-                color:#ff5c5c;
-                ">
-                ⚠ CapsLock이 켜져 있습니다.
+        <div class="search-section">
+            <div class="input-group">
+                <span class="input-label">블로그 지수 분석 (Naver)</span>
+                <div class="search-box">
+                    <input type="text" id="blogId" placeholder="네이버 블로그 ID를 입력해주세요" onkeypress="if(event.keyCode==13) startAnalysis('blog')">
+                    <button class="btn-common btn-naver" onclick="startAnalysis('blog')">분석하기</button>
                 </div>
-
-                <button
-                class="btn-common btn-naver"
-                onclick="startAnalysis()">
-
-                분석하기
-
-                </button>
-
             </div>
 
-        </div>
-
+      
+        <p class="footer-notice">
+            아이디 입력 시 해당 블로그의 최근 30일 활성 데이터 스코어 및<br>
+            종합 노출 가중치 리포트를 실시간으로 파싱하여 제공합니다.
+        </p>
     </div>
 
-    <p class="footer-notice">
-        아이디 입력 시 해당 블로그의 최근 30일 활성 데이터 스코어 및<br>
-        종합 노출 가중치 리포트를 실시간으로 파싱하여 제공합니다.
-    </p>
-
-</div>
-
-<script>
-
-function startAnalysis() {
-
-    const id =
-    document.getElementById('blogId')
-    .value.trim();
-
-    if (!id)
-    return alert('네이버 블로그 아이디를 입력해주세요.');
-
-    location.href =
-    `result.html?blogId=${encodeURIComponent(id)}`;
-
-}
-
-const blogInput =
-document.getElementById('blogId');
-
-const capsWarning =
-document.getElementById('caps-warning');
-
-blogInput.addEventListener('keyup', function(e){
-
-    const isCaps =
-    e.getModifierState('CapsLock');
-
-    capsWarning.style.display =
-    isCaps ? 'block' : 'none';
-
-});
-
-</script>
-
-<div style="
-margin-top:18px;
-text-align:center;
-font-size:13px;
-color:#8b949e;
-">
-
-<a 
-href="https://open.kakao.com/o/sAK0pH6f"
-target="_blank"
-style="
-display:inline-flex;
-align-items:center;
-gap:6px;
-color:#8b949e;
-text-decoration:none;
-">
-
-<img 
-src="kakao-icon.png"
-style="
-width:16px;
-height:16px;
-object-fit:contain;
-"
->
-
-광고 · 제휴 문의
-
-</a>
-
-</div>
-
+    <script>
+        function startAnalysis(type) {
+            if (type === 'blog') {
+                const id = document.getElementById('blogId').value.trim();
+                if (!id) return alert('네이버 블로그 아이디를 입력해주세요.');
+                location.href = `result.html?blogId=${encodeURIComponent(id)}`;
+          
+            }
+        }
+    </script>
 </body>
 </html>
